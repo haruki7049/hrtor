@@ -1,29 +1,64 @@
 use clap::Parser;
 use linefeed::Interface;
 use linefeed::ReadResult;
+use linefeed::Terminal;
 use std::error::Error;
 use std::fs::read_to_string;
 use std::io::BufReader;
+use std::io::Read;
 use std::fs::File;
 use std::path::Path;
 
+/// Commands enumeration in interpreter
+#[derive(Debug, PartialEq)]
+enum Commands {
+    /// A command in interpreter, add.
+    Add,
+
+    /// command in interpreter, delete_all.
+    DeleteAll,
+
+    /// command in interpreter, print.
+    Print,
+
+    /// command in interpreter, write.
+    Write,
+
+    /// command in interpreter, exit.
+    Exit,
+}
+
+/// Display implementation for Commands
+impl std::fmt::Display for Commands {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Self::Add => write!(f, "ADD"),
+            Self::DeleteAll => write!(f, "DELETE_All"),
+            Self::Print => write!(f, "PRINT"),
+            Self::Write => write!(f, "WRITE"),
+            Self::Exit => write!(f, "EXIT"),
+        }
+    }
+}
+
+/// FromStr implementation for Commands
+impl std::str::FromStr for Commands {
+    type Err = &'static str;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "ADD" => Ok(Commands::Add),
+            "DELETE_ALL" => Ok(Commands::DeleteAll),
+            "PRINT" => Ok(Commands::Print),
+            "WRITE" => Ok(Commands::Write),
+            "EXIT" => Ok(Commands::Exit),
+            _ => Err("Undefined Commands for hrtor's interpreter."),
+        }
+    }
+}
+
 /// PROMPT message in interpreter
 const PROMPT: &str = "hrtor:> ";
-
-/// command in interpreter, add.
-const ADD: &str = "add";
-
-/// command in interpreter, delete_all.
-const DELETE_ALL: &str = "delete_all";
-
-/// command in interpreter, print.
-const PRINT: &str = "print";
-
-/// command in interpreter, write.
-const WRITE: &str = "write";
-
-/// command in interpreter, exit.
-const EXIT: &str = "exit";
 
 /// CommandLine Argument
 #[derive(Parser)]
@@ -48,14 +83,25 @@ fn read_filepath() -> Result<String, Box<dyn Error>> {
     Ok(filepath)
 }
 
-fn main() -> Result<(), Box<dyn Error>> {
-    // open file
-    let mut f: File = File::open(read_filepath()?.as_str())?;
-    // create a new buffer from above file
-    let mut reader = BufReader::new(f);
 
-    // get filepath
-    let filepath: Path;
+/// main function
+fn main() -> Result<(), Box<dyn Error>> {
+    // record filepath through a CommandLine Argument
+    let filepath: String = read_filepath()?;
+    // file_context is used as buffer
+    let mut file_context: String = match std::fs::read_to_string(&filepath) {
+        Ok(context) => {
+            println!("{}", &filepath);
+            context
+        }
+        Err(err) => {
+            println!("{}", err);
+            println!("create a new buffer to continue this process.");
+            String::new()
+        }
+    };
+
+    println!("{}", &file_context);
 
     // create interpreter by linefeed
     let reader = Interface::new(PROMPT).unwrap();
@@ -65,23 +111,46 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     // mainloop by linefeed
     while let ReadResult::Input(input) = reader.read_line().unwrap() {
-        if input.eq(EXIT) {
-            break;
-        }
-        if input.eq(PRINT) {
-            println!("{}", buffer);
-        }
-        if input.eq(WRITE) {
-            write_into_file(&mut buffer, &filepath);
-        }
-        if input.eq(ADD) {
-            add_context_into_buffer(&mut buffer);
-        }
-        if input.eq(DELETE_ALL) {
-            delete_all_context_in_buffer(&mut buffer);
+        let input = input.parse::<Commands>().unwrap();
+
+        match input {
+            Commands::Exit => {
+                break;
+            }
+            Commands::Print => {
+                println!("{}", file_context);
+            }
+            Commands::Write => {
+                if let Err(err) = std::fs::write(&filepath, &file_context) {
+                    eprintln!("Error saving file: {}", err);
+                } else {
+                    println!("file saved successfully");
+                }
+            }
+            Commands::Add => {
+                let mut inputed_text: String = String::new();
+                loop {
+                    let mut last_line: String = String::new();
+
+                    std::io::stdin()
+                        .read_line(&mut last_line)
+                        .expect("failed to read line");
+
+                    if last_line.as_str() == ".\n" {
+                        break;
+                    }
+                    inputed_text.push_str(&last_line);
+                }
+                file_context = inputed_text;
+            }
+            Commands::DeleteAll => {
+                file_context = String::new();
+                println!("Deleted all in buffer's context");
+            }
         }
     }
 
+    // Good bye message
     println!("Bye!!");
     Ok(())
 }

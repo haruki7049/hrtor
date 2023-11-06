@@ -1,22 +1,13 @@
 extern crate hrtor;
 use hrtor::Commands;
-use hrtor::AppArg;
 use hrtor::PROMPT;
 use hrtor::save_file;
 use hrtor::push_context;
 use hrtor::get_file_info;
 
-use clap::Parser;
 use linefeed::Interface;
 use linefeed::ReadResult;
-use linefeed::Terminal;
 use std::error::Error;
-use std::fs::read_to_string;
-use std::io::BufReader;
-use std::io::Read;
-use std::fs::File;
-use std::path::Path;
-
 
 /// main function
 fn main() -> Result<(), Box<dyn Error>> {
@@ -26,7 +17,7 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     // create interpreter by linefeed
     let reader = Interface::new(PROMPT).unwrap();
-    reader.set_prompt(format!("{}", PROMPT).as_ref()).unwrap();
+    reader.set_prompt(PROMPT.to_string().as_ref()).unwrap();
 
     println!("filepath: {}", filepath);
 

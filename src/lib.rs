@@ -88,7 +88,7 @@ pub fn get_file_info() -> Result<(String, String), Box<dyn Error>> {
 
 /// save file
 pub fn save_file(filepath: &String, file_context: &String) {
-    if let Err(err) = std::fs::write(&filepath, &file_context) {
+    if let Err(err) = std::fs::write(filepath, file_context) {
         eprintln!("Error saving file: {}", err);
     } else {
         println!("file saved successfully");

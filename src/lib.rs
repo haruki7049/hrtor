@@ -10,6 +10,9 @@ pub struct AppArg {
 
     /// File's Path
     pub path: String,
+
+    #[arg(long)]
+    pub config: String,
 }
 
 /// Commands enumeration in interpreter

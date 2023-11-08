@@ -4,6 +4,7 @@ use hrtor::PROMPT;
 use hrtor::save_file;
 use hrtor::push_context;
 use hrtor::get_file_info;
+use hrtor::get_config_info;
 
 use linefeed::Interface;
 use linefeed::ReadResult;
@@ -25,29 +26,58 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     println!("filepath: {}", filepath);
 
-    let config_map: HashMap<String, String> = read_config();
-    apply_config(config_map);
+    // read config file
+    let (configpath, config_context) = get_config_info().unwrap();
+
+    let mut exit: String = String::from("");
+    let mut print: String = String::from("");
+    let mut write: String = String::from("");
+    let mut add: String = String::from("");
+    let mut delete_all: String = String::from("");
+
+    // lua_script
+    let lua: Lua = Lua::new();
+    let _ = lua.context(|lua_context| {
+        // lua_script loading
+        let _ = lua_context.load(&config_context).exec();
+
+        let mut config_map: HashMap<String, String> = HashMap::new();
+
+        let commands_table: rlua::Table = lua_context.globals().get("commands").expect("failed to get 'commands' table");
+
+        // loading each commands' alias
+        exit = commands_table.get("exit").expect("failed to get 'exit' variables");
+        print = commands_table.get("print").expect("failed to get 'print' variables");
+        write = commands_table.get("write").expect("failed to get 'write' variables");
+        add = commands_table.get("add").expect("failed to get 'add' variables");
+        delete_all = commands_table.get("delete_all").expect("failed to get 'delete_all' variables");
+    });
+
+    println!("{:?}, {:?}, {:?}, {:?}, {:?}", exit, print, write, add, delete_all);
 
     // mainloop by linefeed
     while let ReadResult::Input(input) = reader.read_line().unwrap() {
-        let input = input.parse::<Commands>().unwrap();
+        // let input = input.parse::<Commands>().unwrap();
+        println!("{:?}", input);
 
         match input {
-            Commands::Exit => {
-                break;
-            }
-            Commands::Print => {
+            print => {
                 println!("{}", file_context);
             }
-            Commands::Write => {
+            write => {
                 save_file(&filepath, &file_context);
             }
-            Commands::Add => {
+            add => {
                 file_context = push_context();
             }
-            Commands::DeleteAll => {
+            delete_all => {
                 file_context = String::new();
                 println!("Deleted all in buffer's context");
+            }
+            exit => {
+                break;
+            }
+            _ => {
             }
         }
     }
@@ -55,40 +85,6 @@ fn main() -> Result<(), Box<dyn Error>> {
     // Good bye message
     println!("Bye!!");
     Ok(())
-}
-
-struct Config {
-    exit_name: String,
-    print_name: String,
-    write_name: String,
-    add_name: String,
-    delete_all_name: String,
-}
-
-fn read_config() -> HashMap<String, String> {
-    // read config file
-    let (_filepath, config_context) = get_file_info().unwrap();
-
-    // lua_script
-    let lua: Lua = Lua::new();
-    let config_map: HashMap<String, String> = lua.context(|lua_context| {
-        // lua_script loading
-        let _ = lua_context.load(&config_context).exec();
-
-        let mut config_map: HashMap<String, String> = HashMap::new();
-
-        for pair in lua_context.globals().pairs::<String, String>() {
-            let (key, value) = pair.unwrap();
-            config_map.insert(key, value);
-        }
-
-        config_map
-    });
-
-    config_map
-}
-
-fn apply_config(config_map: HashMap<String, String>) {
 }
 
 #[cfg(test)]

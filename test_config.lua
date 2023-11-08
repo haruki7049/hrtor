@@ -1,5 +1,7 @@
-exit_name = "q"
-add_name = "a"
-delete_all_name = "dA"
-write_name = "w"
-print_name = "p"
+commands = {
+  exit = "q",
+  add = "a",
+  delete_all = "dA",
+  write = "w",
+  print = "p",
+}

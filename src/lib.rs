@@ -63,7 +63,7 @@ impl std::str::FromStr for Commands {
     }
 }
 
-/// read filepath from the first argument
+/// read filepath from CommandLine's first argument
 fn read_filepath() -> Result<String, Box<dyn Error>> {
     let app = AppArg::parse();
     let filepath: String = app.path;
@@ -87,6 +87,30 @@ pub fn get_file_info() -> Result<(String, String), Box<dyn Error>> {
         }
     };
     Ok((filepath, file_context))
+}
+
+/// read filepath from CommandLine's config argument
+fn read_configpath() -> Result<String, Box<dyn Error>> {
+    let app = AppArg::parse();
+    let configpath: String = app.config;
+    Ok(configpath)
+}
+
+/// Get config's path and config's context from the config CommandLine Option
+pub fn get_config_info() -> Result<(String, String), Box<dyn Error>> {
+    let configpath: String = read_configpath()?;
+    let config_context: String = match std::fs::read_to_string(&configpath) {
+        Ok(context) => {
+            println!("{}", context);
+            context
+        }
+        Err(err) => {
+            println!("{}", err);
+            println!("no config");
+            String::new()
+        }
+    };
+    Ok((configpath, config_context))
 }
 
 /// save file

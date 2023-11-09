@@ -16,54 +16,6 @@ pub struct AppArg {
     pub config: Option<String>,
 }
 
-/// Commands enumeration in interpreter
-#[derive(Debug, PartialEq)]
-pub enum Commands {
-    /// A command in interpreter, add.
-    Add,
-
-    /// command in interpreter, delete_all.
-    DeleteAll,
-
-    /// command in interpreter, print.
-    Print,
-
-    /// command in interpreter, write.
-    Write,
-
-    /// command in interpreter, exit.
-    Exit,
-}
-
-/// Display implementation for Commands
-impl std::fmt::Display for Commands {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        match self {
-            Self::Add => write!(f, "ADD"),
-            Self::DeleteAll => write!(f, "DELETE_All"),
-            Self::Print => write!(f, "PRINT"),
-            Self::Write => write!(f, "WRITE"),
-            Self::Exit => write!(f, "EXIT"),
-        }
-    }
-}
-
-/// FromStr implementation for Commands
-impl std::str::FromStr for Commands {
-    type Err = &'static str;
-
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "ADD" => Ok(Commands::Add),
-            "DELETE_ALL" => Ok(Commands::DeleteAll),
-            "PRINT" => Ok(Commands::Print),
-            "WRITE" => Ok(Commands::Write),
-            "EXIT" => Ok(Commands::Exit),
-            _ => Err("Undefined Commands for hrtor's interpreter."),
-        }
-    }
-}
-
 /// read filepath from CommandLine's first argument
 fn read_filepath() -> Result<String, Box<dyn Error>> {
     let app = AppArg::parse();

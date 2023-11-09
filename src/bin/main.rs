@@ -1,5 +1,3 @@
-extern crate hrtor;
-use hrtor::Commands;
 use hrtor::PROMPT;
 use hrtor::save_file;
 use hrtor::push_context;
@@ -10,9 +8,6 @@ use linefeed::Interface;
 use linefeed::ReadResult;
 use rlua::Lua;
 use std::error::Error;
-use std::rc::Rc;
-use std::cell::RefCell;
-use std::collections::HashMap;
 
 /// main function
 fn main() -> Result<(), Box<dyn Error>> {
@@ -27,7 +22,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     println!("filepath: {}", filepath);
 
     // read config file
-    let (configpath, config_context) = get_config_info().unwrap();
+    let (_configpath, config_context) = get_config_info().unwrap();
 
     // commands declaration
     let mut exit: String = String::from("");
@@ -38,7 +33,7 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     // lua_script
     let lua: Lua = Lua::new();
-    let _ = lua.context(|lua_context| {
+    lua.context(|lua_context| {
         // lua_script loading
         let _ = lua_context.load(&config_context).exec();
 

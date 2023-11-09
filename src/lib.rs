@@ -9,58 +9,15 @@ pub const PROMPT: &str = "hrtor:> ";
 pub struct AppArg {
 
     /// File's Path
+    #[arg(help = "The file you want to edit")]
     pub path: String,
+
+    //#[arg(long, default_value_t = String::from("./init.lua"))]
+    #[arg(short, long, help = "your config file which is as config.lua")]
+    pub config: Option<String>,
 }
 
-/// Commands enumeration in interpreter
-#[derive(Debug, PartialEq)]
-pub enum Commands {
-    /// A command in interpreter, add.
-    Add,
-
-    /// command in interpreter, delete_all.
-    DeleteAll,
-
-    /// command in interpreter, print.
-    Print,
-
-    /// command in interpreter, write.
-    Write,
-
-    /// command in interpreter, exit.
-    Exit,
-}
-
-/// Display implementation for Commands
-impl std::fmt::Display for Commands {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        match self {
-            Self::Add => write!(f, "ADD"),
-            Self::DeleteAll => write!(f, "DELETE_All"),
-            Self::Print => write!(f, "PRINT"),
-            Self::Write => write!(f, "WRITE"),
-            Self::Exit => write!(f, "EXIT"),
-        }
-    }
-}
-
-/// FromStr implementation for Commands
-impl std::str::FromStr for Commands {
-    type Err = &'static str;
-
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "ADD" => Ok(Commands::Add),
-            "DELETE_ALL" => Ok(Commands::DeleteAll),
-            "PRINT" => Ok(Commands::Print),
-            "WRITE" => Ok(Commands::Write),
-            "EXIT" => Ok(Commands::Exit),
-            _ => Err("Undefined Commands for hrtor's interpreter."),
-        }
-    }
-}
-
-/// read filepath from the first argument
+/// read filepath from CommandLine's first argument
 fn read_filepath() -> Result<String, Box<dyn Error>> {
     let app = AppArg::parse();
     let filepath: String = app.path;
@@ -77,18 +34,44 @@ pub fn get_file_info() -> Result<(String, String), Box<dyn Error>> {
             println!("{}", &filepath);
             context
         }
-        Err(err) => {
-            println!("{}", err);
-            println!("create a new buffer to continue this process.");
+        Err(_) => {
+            println!("your file cannot find. create a new buffer to continue this process.");
             String::new()
         }
     };
     Ok((filepath, file_context))
 }
 
+/// read filepath from CommandLine's config argument
+fn read_configpath() -> Result<String, Box<dyn Error>> {
+    let app = AppArg::parse();
+    let configpath: String = match app.config {
+        Some(path) => path,
+        None => {
+            println!("failed to load config file");
+            String::from("")
+        }
+    };
+    Ok(configpath)
+}
+
+/// Get config's path and config's context from the config CommandLine Option
+pub fn get_config_info() -> Result<(String, String), Box<dyn Error>> {
+    let configpath: String = read_configpath()?;
+    let config_context: String = match std::fs::read_to_string(&configpath) {
+        Ok(context) => {
+            context
+        }
+        Err(_) => {
+            String::new()
+        }
+    };
+    Ok((configpath, config_context))
+}
+
 /// save file
 pub fn save_file(filepath: &String, file_context: &String) {
-    if let Err(err) = std::fs::write(&filepath, &file_context) {
+    if let Err(err) = std::fs::write(filepath, file_context) {
         eprintln!("Error saving file: {}", err);
     } else {
         println!("file saved successfully");
@@ -96,6 +79,26 @@ pub fn save_file(filepath: &String, file_context: &String) {
 }
 
 /// get some context from standard input, and return String
+#[cfg(windows)]
+pub fn push_context() -> String {
+    let mut inputed_text: String = String::new();
+    loop {
+        let mut last_line: String = String::new();
+
+        std::io::stdin()
+            .read_line(&mut last_line)
+            .expect("failed to read line");
+
+        if last_line.as_str() == ".\r\n" {
+            break;
+        }
+        inputed_text.push_str(&last_line);
+    }
+    inputed_text
+}
+
+/// get some context from standard input, and return String
+#[cfg(unix)]
 pub fn push_context() -> String {
     let mut inputed_text: String = String::new();
     loop {

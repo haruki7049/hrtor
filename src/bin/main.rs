@@ -1,22 +1,13 @@
-extern crate hrtor;
-use hrtor::Commands;
-use hrtor::AppArg;
 use hrtor::PROMPT;
 use hrtor::save_file;
 use hrtor::push_context;
 use hrtor::get_file_info;
+use hrtor::get_config_info;
 
-use clap::Parser;
 use linefeed::Interface;
 use linefeed::ReadResult;
-use linefeed::Terminal;
+use rlua::Lua;
 use std::error::Error;
-use std::fs::read_to_string;
-use std::io::BufReader;
-use std::io::Read;
-use std::fs::File;
-use std::path::Path;
-
 
 /// main function
 fn main() -> Result<(), Box<dyn Error>> {
@@ -26,30 +17,65 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     // create interpreter by linefeed
     let reader = Interface::new(PROMPT).unwrap();
-    reader.set_prompt(format!("{}", PROMPT).as_ref()).unwrap();
+    reader.set_prompt(PROMPT.to_string().as_ref()).unwrap();
 
     println!("filepath: {}", filepath);
 
+    // read config file
+    let (_configpath, config_context) = get_config_info().unwrap();
+
+    // commands declaration
+    let mut exit: String = String::from("");
+    let mut print: String = String::from("");
+    let mut write: String = String::from("");
+    let mut add: String = String::from("");
+    let mut delete_all: String = String::from("");
+
+    // lua_script
+    let lua: Lua = Lua::new();
+    lua.context(|lua_context| {
+        // lua_script loading
+        let _ = lua_context.load(&config_context).exec();
+
+        let commands_table: rlua::Table = match lua_context.globals().get("commands") {
+            Ok(table) => table,
+            Err(_) => {
+                eprintln!("cannot load commands' table in config file. you may not exit hrtor's command. YOU CAN USE CONTROL+D to exit.");
+                return;
+            }
+        };
+
+        // loading each commands' alias
+        exit = commands_table.get("exit").unwrap();
+        print = commands_table.get("print").unwrap();
+        write = commands_table.get("write").unwrap();
+        add = commands_table.get("add").unwrap();
+        delete_all = commands_table.get("delete_all").unwrap();
+
+    });
+
     // mainloop by linefeed
     while let ReadResult::Input(input) = reader.read_line().unwrap() {
-        let input = input.parse::<Commands>().unwrap();
-
+        // let input = input.parse::<Commands>().unwrap();
         match input {
-            Commands::Exit => {
-                break;
-            }
-            Commands::Print => {
+            ref_print if ref_print == print => {
                 println!("{}", file_context);
             }
-            Commands::Write => {
+            ref_write if ref_write == write => {
                 save_file(&filepath, &file_context);
             }
-            Commands::Add => {
+            ref_add if ref_add == add => {
                 file_context = push_context();
             }
-            Commands::DeleteAll => {
+            ref_delete_all if ref_delete_all == delete_all => {
                 file_context = String::new();
                 println!("Deleted all in buffer's context");
+            }
+            ref_exit if ref_exit == exit => {
+                break;
+            }
+            _ => {
+                eprintln!("unknown command: {:?}", input);
             }
         }
     }

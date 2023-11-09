@@ -29,6 +29,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     // read config file
     let (configpath, config_context) = get_config_info().unwrap();
 
+    // commands declaration
     let mut exit: String = String::from("");
     let mut print: String = String::from("");
     let mut write: String = String::from("");
@@ -41,43 +42,45 @@ fn main() -> Result<(), Box<dyn Error>> {
         // lua_script loading
         let _ = lua_context.load(&config_context).exec();
 
-        let mut config_map: HashMap<String, String> = HashMap::new();
-
-        let commands_table: rlua::Table = lua_context.globals().get("commands").expect("failed to get 'commands' table");
+        let commands_table: rlua::Table = match lua_context.globals().get("commands") {
+            Ok(table) => table,
+            Err(_) => {
+                eprintln!("cannot load commands' table in config file. you may not exit hrtor's command. YOU CAN USE CONTROL+D to exit.");
+                return;
+            }
+        };
 
         // loading each commands' alias
-        exit = commands_table.get("exit").expect("failed to get 'exit' variables");
-        print = commands_table.get("print").expect("failed to get 'print' variables");
-        write = commands_table.get("write").expect("failed to get 'write' variables");
-        add = commands_table.get("add").expect("failed to get 'add' variables");
-        delete_all = commands_table.get("delete_all").expect("failed to get 'delete_all' variables");
-    });
+        exit = commands_table.get("exit").unwrap();
+        print = commands_table.get("print").unwrap();
+        write = commands_table.get("write").unwrap();
+        add = commands_table.get("add").unwrap();
+        delete_all = commands_table.get("delete_all").unwrap();
 
-    println!("{:?}, {:?}, {:?}, {:?}, {:?}", exit, print, write, add, delete_all);
+    });
 
     // mainloop by linefeed
     while let ReadResult::Input(input) = reader.read_line().unwrap() {
         // let input = input.parse::<Commands>().unwrap();
-        println!("{:?}", input);
-
         match input {
-            print => {
+            ref_print if ref_print == print => {
                 println!("{}", file_context);
             }
-            write => {
+            ref_write if ref_write == write => {
                 save_file(&filepath, &file_context);
             }
-            add => {
+            ref_add if ref_add == add => {
                 file_context = push_context();
             }
-            delete_all => {
+            ref_delete_all if ref_delete_all == delete_all => {
                 file_context = String::new();
                 println!("Deleted all in buffer's context");
             }
-            exit => {
+            ref_exit if ref_exit == exit => {
                 break;
             }
             _ => {
+                eprintln!("unknown command: {:?}", input);
             }
         }
     }

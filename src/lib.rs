@@ -11,8 +11,9 @@ pub struct AppArg {
     /// File's Path
     pub path: String,
 
-    #[arg(long)]
-    pub config: String,
+    //#[arg(long, default_value_t = String::from("./init.lua"))]
+    #[arg(short, long)]
+    pub config: Option<String>,
 }
 
 /// Commands enumeration in interpreter
@@ -80,9 +81,8 @@ pub fn get_file_info() -> Result<(String, String), Box<dyn Error>> {
             println!("{}", &filepath);
             context
         }
-        Err(err) => {
-            println!("{}", err);
-            println!("create a new buffer to continue this process.");
+        Err(_) => {
+            println!("your file cannot find. create a new buffer to continue this process.");
             String::new()
         }
     };
@@ -92,7 +92,13 @@ pub fn get_file_info() -> Result<(String, String), Box<dyn Error>> {
 /// read filepath from CommandLine's config argument
 fn read_configpath() -> Result<String, Box<dyn Error>> {
     let app = AppArg::parse();
-    let configpath: String = app.config;
+    let configpath: String = match app.config {
+        Some(path) => path,
+        None => {
+            println!("failed to load config file");
+            String::from("")
+        }
+    };
     Ok(configpath)
 }
 
@@ -101,12 +107,9 @@ pub fn get_config_info() -> Result<(String, String), Box<dyn Error>> {
     let configpath: String = read_configpath()?;
     let config_context: String = match std::fs::read_to_string(&configpath) {
         Ok(context) => {
-            println!("{}", context);
             context
         }
-        Err(err) => {
-            println!("{}", err);
-            println!("no config");
+        Err(_) => {
             String::new()
         }
     };
@@ -123,6 +126,26 @@ pub fn save_file(filepath: &String, file_context: &String) {
 }
 
 /// get some context from standard input, and return String
+#[cfg(windows)]
+pub fn push_context() -> String {
+    let mut inputed_text: String = String::new();
+    loop {
+        let mut last_line: String = String::new();
+
+        std::io::stdin()
+            .read_line(&mut last_line)
+            .expect("failed to read line");
+
+        if last_line.as_str() == ".\r\n" {
+            break;
+        }
+        inputed_text.push_str(&last_line);
+    }
+    inputed_text
+}
+
+/// get some context from standard input, and return String
+#[cfg(unix)]
 pub fn push_context() -> String {
     let mut inputed_text: String = String::new();
     loop {

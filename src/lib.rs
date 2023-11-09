@@ -9,10 +9,11 @@ pub const PROMPT: &str = "hrtor:> ";
 pub struct AppArg {
 
     /// File's Path
+    #[arg(help = "The file you want to edit")]
     pub path: String,
 
     //#[arg(long, default_value_t = String::from("./init.lua"))]
-    #[arg(short, long)]
+    #[arg(short, long, help = "your config file which is as config.lua")]
     pub config: Option<String>,
 }
 

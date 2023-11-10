@@ -6,6 +6,7 @@ pub const PROMPT: &str = "hrtor:> ";
 
 /// CommandLine Argument
 #[derive(Parser)]
+#[command(author, version, about)]
 pub struct AppArg {
 
     /// File's Path

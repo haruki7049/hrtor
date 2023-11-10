@@ -2,5 +2,10 @@
 HaRuki's scalable line ediTOR.
 
 # Usage
-`cargo run -- sample.txt --config ./test_config.lua`
-`cargo run -- sample.txt`
+```rust
+cargo run -- sample.txt --config ./test_config.lua
+```
+
+```rust
+cargo run -- sample.txt
+```

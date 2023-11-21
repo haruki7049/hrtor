@@ -8,7 +8,6 @@ pub const PROMPT: &str = "hrtor:> ";
 #[derive(Parser)]
 #[command(author, version, about)]
 pub struct AppArg {
-
     /// File's Path
     #[arg(help = "The file you want to edit")]
     pub path: String,
@@ -18,17 +17,15 @@ pub struct AppArg {
     pub config: Option<String>,
 }
 
-/// read filepath from CommandLine's first argument
-fn read_filepath() -> Result<String, Box<dyn Error>> {
-    let app = AppArg::parse();
-    let filepath: String = app.path;
-    Ok(filepath)
-}
-
 /// Get file's path and file's context from a CommandLine Argument
 pub fn get_file_info() -> Result<(String, String), Box<dyn Error>> {
     // record filepath through a CommandLine Argument
-    let filepath: String = read_filepath()?;
+    let filepath: String = {
+        let app = AppArg::parse();
+        let filepath: String = app.path;
+        filepath
+    };
+
     // file_context is used as buffer
     let file_context: String = match std::fs::read_to_string(&filepath) {
         Ok(context) => {
@@ -43,29 +40,23 @@ pub fn get_file_info() -> Result<(String, String), Box<dyn Error>> {
     Ok((filepath, file_context))
 }
 
-/// read filepath from CommandLine's config argument
-fn read_configpath() -> Result<String, Box<dyn Error>> {
-    let app = AppArg::parse();
-    let configpath: String = match app.config {
-        Some(path) => path,
-        None => {
-            println!("failed to load config file");
-            String::from("")
-        }
-    };
-    Ok(configpath)
-}
-
 /// Get config's path and config's context from the config CommandLine Option
 pub fn get_config_info() -> Result<(String, String), Box<dyn Error>> {
-    let configpath: String = read_configpath()?;
+    // let configpath: String = read_configpath()?;
+    let configpath: String = {
+        let app = AppArg::parse();
+        let configpath: String = match app.config {
+            Some(path) => path,
+            None => {
+                println!("failed to load config file");
+                String::from("")
+            }
+        };
+        configpath
+    };
     let config_context: String = match std::fs::read_to_string(&configpath) {
-        Ok(context) => {
-            context
-        }
-        Err(_) => {
-            String::new()
-        }
+        Ok(context) => context,
+        Err(_) => String::new(),
     };
     Ok((configpath, config_context))
 }

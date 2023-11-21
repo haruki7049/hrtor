@@ -2,7 +2,7 @@ use hrtor::file_loader::get_config_info;
 use hrtor::file_loader::get_file_info;
 use hrtor::commands::save_file;
 use hrtor::commands::push_context;
-use hrtor::PROMPT;
+use hrtor::constants::PROMPT;
 
 use linefeed::Interface;
 use linefeed::ReadResult;

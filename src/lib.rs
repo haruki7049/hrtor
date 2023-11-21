@@ -8,7 +8,6 @@ pub const PROMPT: &str = "hrtor:> ";
 #[derive(Parser)]
 #[command(author, version, about)]
 pub struct AppArg {
-
     /// File's Path
     #[arg(help = "The file you want to edit")]
     pub path: String,
@@ -56,12 +55,8 @@ pub fn get_config_info() -> Result<(String, String), Box<dyn Error>> {
         configpath
     };
     let config_context: String = match std::fs::read_to_string(&configpath) {
-        Ok(context) => {
-            context
-        }
-        Err(_) => {
-            String::new()
-        }
+        Ok(context) => context,
+        Err(_) => String::new(),
     };
     Ok((configpath, config_context))
 }

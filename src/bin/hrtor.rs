@@ -1,8 +1,8 @@
-use hrtor::PROMPT;
-use hrtor::save_file;
-use hrtor::push_context;
-use hrtor::get_file_info;
 use hrtor::get_config_info;
+use hrtor::get_file_info;
+use hrtor::push_context;
+use hrtor::save_file;
+use hrtor::PROMPT;
 
 use linefeed::Interface;
 use linefeed::ReadResult;

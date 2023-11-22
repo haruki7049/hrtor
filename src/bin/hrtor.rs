@@ -58,20 +58,20 @@ fn main() -> Result<(), Box<dyn Error>> {
     while let ReadResult::Input(input) = reader.read_line().unwrap() {
         // let input = input.parse::<Commands>().unwrap();
         match input {
-            ref_print if ref_print == print => {
+            cmd if cmd == print => {
                 println!("{}", file_context);
             }
-            ref_write if ref_write == write => {
+            cmd if cmd == write => {
                 save_file(&filepath, &file_context);
             }
-            ref_add if ref_add == add => {
+            cmd if cmd == add => {
                 file_context = push_context();
             }
-            ref_delete_all if ref_delete_all == delete_all => {
+            cmd if cmd == delete_all => {
                 file_context = String::new();
                 println!("Deleted all in buffer's context");
             }
-            ref_exit if ref_exit == exit => {
+            cmd if cmd == exit => {
                 break;
             }
             _ => {

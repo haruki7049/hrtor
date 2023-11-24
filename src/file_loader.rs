@@ -14,8 +14,13 @@ pub struct AppArg {
     pub config: Option<String>,
 }
 
+pub struct FileInfo {
+    pub path: String,
+    pub context: String,
+}
+
 /// Get file's path and file's context from a CommandLine Argument
-pub fn get_file_info() -> Result<(String, String), Box<dyn Error>> {
+pub fn get_file_info() -> Result<FileInfo, Box<dyn Error>> {
     // record filepath through a CommandLine Argument
     let filepath: String = {
         let app = AppArg::parse();
@@ -34,11 +39,14 @@ pub fn get_file_info() -> Result<(String, String), Box<dyn Error>> {
             String::new()
         }
     };
-    Ok((filepath, file_context))
+    Ok(FileInfo {
+        path: filepath,
+        context: file_context,
+    })
 }
 
 /// Get config's path and config's context from the config CommandLine Option
-pub fn get_config_info() -> Result<(String, String), Box<dyn Error>> {
+pub fn get_config_info() -> Result<FileInfo, Box<dyn Error>> {
     // let configpath: String = read_configpath()?;
     let configpath: String = {
         let app = AppArg::parse();
@@ -49,5 +57,8 @@ pub fn get_config_info() -> Result<(String, String), Box<dyn Error>> {
     };
     let config_context: String =
         std::fs::read_to_string(&configpath).unwrap_or_else(|_| String::new());
-    Ok((configpath, config_context))
+    Ok(FileInfo {
+        path: configpath,
+        context: config_context,
+    })
 }

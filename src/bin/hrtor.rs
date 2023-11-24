@@ -3,6 +3,7 @@ use hrtor::commands::io::save_file;
 use hrtor::constants::PROMPT;
 use hrtor::file_loader::get_config_info;
 use hrtor::file_loader::get_file_info;
+use hrtor::file_loader::FileInfo;
 
 use linefeed::Interface;
 use linefeed::ReadResult;
@@ -11,18 +12,18 @@ use std::error::Error;
 
 /// main function
 fn main() -> Result<(), Box<dyn Error>> {
-    let (filepath, mut file_context) = get_file_info().unwrap();
+    let mut file: FileInfo = get_file_info().unwrap();
 
-    println!("{}", &file_context);
+    println!("{}", &file.context);
 
     // create interpreter by linefeed
     let reader = Interface::new(PROMPT).unwrap();
     reader.set_prompt(PROMPT.to_string().as_ref()).unwrap();
 
-    println!("filepath: {}", filepath);
+    println!("filepath: {}", &file.path);
 
     // read config file
-    let (_configpath, config_context) = get_config_info().unwrap();
+    let config: FileInfo = get_config_info().unwrap();
 
     // commands declaration
     let mut exit: String = String::from("");
@@ -35,7 +36,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     let lua: Lua = Lua::new();
     lua.context(|lua_context| {
         // lua_script loading
-        let _ = lua_context.load(&config_context).exec();
+        let _ = lua_context.load(&config.context).exec();
 
         let commands_table: rlua::Table = lua_context.globals().get("commands").unwrap_or_else(|_| {
             eprintln!("cannot load commands' table in config file. you may not exit hrtor's command. YOU CAN USE CONTROL+D to exit.");
@@ -56,16 +57,16 @@ fn main() -> Result<(), Box<dyn Error>> {
         // let input = input.parse::<Commands>().unwrap();
         match input {
             cmd if cmd == print => {
-                println!("{}", file_context);
+                println!("{}", &file.context);
             }
             cmd if cmd == write => {
-                save_file(&filepath, &file_context);
+                save_file(&file.path, &file.context);
             }
             cmd if cmd == add => {
-                file_context = push_context();
+                file.context = push_context();
             }
             cmd if cmd == delete_all => {
-                file_context = String::new();
+                file.context = String::new();
                 println!("Deleted all in buffer's context");
             }
             cmd if cmd == exit => {

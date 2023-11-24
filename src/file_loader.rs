@@ -47,6 +47,7 @@ pub fn get_config_info() -> Result<(String, String), Box<dyn Error>> {
             String::from("")
         })
     };
-    let config_context: String = std::fs::read_to_string(&configpath).unwrap_or_else(|_| String::new());
+    let config_context: String =
+        std::fs::read_to_string(&configpath).unwrap_or_else(|_| String::new());
     Ok((configpath, config_context))
 }

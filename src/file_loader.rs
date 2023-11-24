@@ -42,18 +42,11 @@ pub fn get_config_info() -> Result<(String, String), Box<dyn Error>> {
     // let configpath: String = read_configpath()?;
     let configpath: String = {
         let app = AppArg::parse();
-        let configpath: String = match app.config {
-            Some(path) => path,
-            None => {
-                println!("failed to load config file");
-                String::from("")
-            }
-        };
-        configpath
+        app.config.unwrap_or_else(|| {
+            println!("failed to load config file");
+            String::from("")
+        })
     };
-    let config_context: String = match std::fs::read_to_string(&configpath) {
-        Ok(context) => context,
-        Err(_) => String::new(),
-    };
+    let config_context: String = std::fs::read_to_string(&configpath).unwrap_or_else(|_| String::new());
     Ok((configpath, config_context))
 }

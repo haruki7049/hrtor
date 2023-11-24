@@ -37,13 +37,10 @@ fn main() -> Result<(), Box<dyn Error>> {
         // lua_script loading
         let _ = lua_context.load(&config_context).exec();
 
-        let commands_table: rlua::Table = match lua_context.globals().get("commands") {
-            Ok(table) => table,
-            Err(_) => {
-                eprintln!("cannot load commands' table in config file. you may not exit hrtor's command. YOU CAN USE CONTROL+D to exit.");
-                return;
-            }
-        };
+        let commands_table: rlua::Table = lua_context.globals().get("commands").unwrap_or_else(|_| {
+            eprintln!("cannot load commands' table in config file. you may not exit hrtor's command. YOU CAN USE CONTROL+D to exit.");
+            lua_context.create_table().unwrap()
+        });
 
         // loading each commands' alias
         exit = commands_table.get("exit").unwrap();

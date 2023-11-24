@@ -14,40 +14,38 @@ pub struct AppArg {
     pub config: Option<String>,
 }
 
-/// Get file's path and file's context from a CommandLine Argument
-pub fn get_file_info() -> Result<(String, String), Box<dyn Error>> {
-    // record filepath through a CommandLine Argument
-    let filepath: String = {
-        let app = AppArg::parse();
-        let filepath: String = app.path;
-        filepath
-    };
+pub struct FileInfo {
+    pub path: String,
+    pub context: String,
+}
 
-    // file_context is used as buffer
-    let file_context: String = match std::fs::read_to_string(&filepath) {
-        Ok(context) => {
-            println!("{}", &filepath);
-            context
-        }
-        Err(_) => {
-            println!("your file cannot find. create a new buffer to continue this process.");
-            String::new()
-        }
-    };
-    Ok((filepath, file_context))
+/// Get file's path and file's context from a CommandLine Argument
+pub fn get_file_info() -> Result<FileInfo, Box<dyn Error>> {
+    let app = AppArg::parse();
+    Ok(FileInfo {
+        path: app.path.clone(),
+        context: match std::fs::read_to_string(&app.path) {
+            Ok(context) => {
+                println!("{}", &app.path);
+                context
+            }
+            Err(_) => {
+                println!("your file cannot find. create a new buffer to continue this process.");
+                String::new()
+            }
+        },
+    })
 }
 
 /// Get config's path and config's context from the config CommandLine Option
-pub fn get_config_info() -> Result<(String, String), Box<dyn Error>> {
-    // let configpath: String = read_configpath()?;
-    let configpath: String = {
-        let app = AppArg::parse();
-        app.config.unwrap_or_else(|| {
+pub fn get_config_info() -> Result<FileInfo, Box<dyn Error>> {
+    let app = AppArg::parse();
+    Ok(FileInfo {
+        path: app.config.clone().unwrap_or_else(|| {
             println!("failed to load config file");
             String::from("")
-        })
-    };
-    let config_context: String =
-        std::fs::read_to_string(&configpath).unwrap_or_else(|_| String::new());
-    Ok((configpath, config_context))
+        }),
+        context: std::fs::read_to_string(app.config.clone().unwrap_or_else(String::new))
+            .unwrap_or_else(|_| String::new()),
+    })
 }

@@ -5,6 +5,12 @@ version = "0.1.0"
 description = "A scalable line editor"
 edition = "2021"
 license = "MIT"
+readme = "README.md"
+homepage = "https://github.com/haruki7049/hrtor"
+repository = "https://github.com/haruki7049/hrtor"
+keywords = ["editor", "text-editor"]
+categories = ["Text editors"]
+
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 

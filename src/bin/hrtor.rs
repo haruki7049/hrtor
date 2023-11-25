@@ -1,14 +1,15 @@
-use hrtor::commands::io::push_context;
-use hrtor::commands::io::save_file;
-use hrtor::constants::PROMPT;
-use hrtor::file_loader::get_config_info;
-use hrtor::file_loader::get_file_info;
-use hrtor::file_loader::FileInfo;
+use hrtor::{
+    commands::io::{push_context, save_file},
+    constants::PROMPT,
+    file_loader::{get_config_info, get_file_info, FileInfo},
+};
 
-use linefeed::Interface;
-use linefeed::ReadResult;
+use linefeed::{Interface, ReadResult};
 use rlua::Lua;
-use std::error::Error;
+use std::{
+    error::Error,
+    io::{stdout, StdoutLock},
+};
 
 /// main function
 fn main() -> Result<(), Box<dyn Error>> {

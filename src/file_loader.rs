@@ -24,16 +24,10 @@ pub fn get_file_info() -> Result<FileInfo, Box<dyn Error>> {
     let app = AppArg::parse();
     Ok(FileInfo {
         path: app.path.clone(),
-        context: match std::fs::read_to_string(&app.path) {
-            Ok(context) => {
-                println!("{}", &app.path);
-                context
-            }
-            Err(_) => {
-                println!("your file cannot find. create a new buffer to continue this process.");
-                String::new()
-            }
-        },
+        context: std::fs::read_to_string(&app.path).unwrap_or_else(|_| {
+            println!("your file cannot find. create a new buffer to continue this process.");
+            String::new()
+        }),
     })
 }
 

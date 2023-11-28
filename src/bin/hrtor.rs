@@ -12,13 +12,9 @@ use std::error::Error;
 fn main() -> Result<(), Box<dyn Error>> {
     let mut file: FileInfo = get_file_info().unwrap();
 
-    println!("{}", &file.context);
-
     // create interpreter by linefeed
     let reader = Interface::new(PROMPT).unwrap();
     reader.set_prompt(PROMPT.to_string().as_ref()).unwrap();
-
-    println!("filepath: {}", &file.path);
 
     // read config file
     let config: FileInfo = get_config_info().unwrap();

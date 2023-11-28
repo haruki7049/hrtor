@@ -6,9 +6,7 @@ use hrtor::{
 
 use linefeed::{Interface, ReadResult};
 use rlua::Lua;
-use std::{
-    error::Error,
-};
+use std::error::Error;
 
 /// main function
 fn main() -> Result<(), Box<dyn Error>> {

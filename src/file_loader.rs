@@ -14,6 +14,7 @@ pub struct AppArg {
     pub config: Option<String>,
 }
 
+#[derive(Clone)]
 pub struct FileInfo {
     pub path: String,
     pub context: String,

@@ -1,80 +1,52 @@
 use hrtor::{
-    commands::io::{push_context, save_file},
     constants::PROMPT,
     file_loader::{get_config_info, get_file_info, FileInfo},
 };
 
 use linefeed::{Interface, ReadResult};
-use rlua::Lua;
-use std::error::Error;
+use rlua::{Function, Lua};
+use std::{collections::HashMap, error::Error};
 
 /// main function
 fn main() -> Result<(), Box<dyn Error>> {
+    #[allow(unused_mut)]
     let mut file: FileInfo = get_file_info().unwrap();
+    let config: FileInfo = get_config_info().unwrap();
+    let commands: HashMap<String, Function> =
+        gen_commands_map(&config.context).expect("failed to recognize config's commands...");
+    let lua: Lua = Lua::new();
 
     // create interpreter by linefeed
     let reader = Interface::new(PROMPT).unwrap();
     reader.set_prompt(PROMPT.to_string().as_ref()).unwrap();
 
-    // read config file
-    let config: FileInfo = get_config_info().unwrap();
-
-    // commands declaration
-    let mut exit: String = String::from("");
-    let mut print: String = String::from("");
-    let mut write: String = String::from("");
-    let mut add: String = String::from("");
-    let mut delete_all: String = String::from("");
-
-    // lua_script
-    let lua: Lua = Lua::new();
-    lua.context(|lua_context| {
-        // lua_script loading
-        let _ = lua_context.load(&config.context).exec();
-
-        let commands_table: rlua::Table = lua_context.globals().get("commands").unwrap_or_else(|_| {
-            eprintln!("cannot load commands' table in config file. you may not exit hrtor's command. YOU CAN USE CONTROL+D to exit.");
-            lua_context.create_table().unwrap()
-        });
-
-        // loading each commands' alias
-        exit = commands_table.get("exit").unwrap();
-        print = commands_table.get("print").unwrap();
-        write = commands_table.get("write").unwrap();
-        add = commands_table.get("add").unwrap();
-        delete_all = commands_table.get("delete_all").unwrap();
-
-    });
-
     // mainloop by linefeed
-    while let ReadResult::Input(input) = reader.read_line().unwrap() {
-        // let input = input.parse::<Commands>().unwrap();
-        match input {
-            cmd if cmd == print => {
-                println!("{}", &file.context);
+    loop {
+        match reader.read_line() {
+            Ok(ReadResult::Input(string)) => {
+                execute_command(&string, &file, &commands, &lua);
             }
-            cmd if cmd == write => {
-                save_file(&file.path, &file.context);
+            Ok(ReadResult::Eof) => {
+                return Ok(());
             }
-            cmd if cmd == add => {
-                file.context = push_context();
+            Err(err) => {
+                eprintln!("failed to read text on this prompt by: {}", err);
             }
-            cmd if cmd == delete_all => {
-                file.context = String::new();
-                println!("Deleted all in buffer's context");
-            }
-            cmd if cmd == exit => {
-                break;
-            }
-            _ => {
-                eprintln!("unknown command: {:?}", input);
-            }
+            Ok(ReadResult::Signal(_)) => {}
         }
     }
+}
 
-    // Good bye message
-    println!("Bye!!");
-    Ok(())
+fn execute_command(
+    _input: &str,
+    mut _file: &FileInfo,
+    _commands: &HashMap<String, Function>,
+    _lua: &Lua,
+) {
+}
+
+fn gen_commands_map(_config: &str) -> Result<HashMap<String, Function>, String> {
+    Ok(HashMap::new())
 }
 
 #[cfg(test)]

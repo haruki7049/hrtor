@@ -8,7 +8,6 @@ use linefeed::{Interface, ReadResult};
 use rlua::Lua;
 use std::{
     error::Error,
-    io::{stdout, StdoutLock},
 };
 
 /// main function

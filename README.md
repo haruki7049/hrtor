@@ -1,5 +1,5 @@
 # hrtor
-HaRuki's scalable line ediTOR.
+hrtor(hɒrɚtɔː, "ハルター") is HaRuki's scalable line ediTOR.
 
 # Usage
 ```bash

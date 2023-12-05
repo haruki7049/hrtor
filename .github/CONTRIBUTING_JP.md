@@ -1,5 +1,7 @@
 # Contribution Guide
 
+This file written in Japanese for JP Developer. If you want the English version, browse [here](./CONTRIBUTING.md).
+
 質問がある場合には[GitHub Discussion for hrtor](https://github.com/haruki7049/hrtor/discussions)に[Q&A Category](https://github.com/haruki7049/hrtor/discussions/categories/q-a)として投稿してください。
 
 ## Issueの作成

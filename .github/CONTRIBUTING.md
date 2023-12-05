@@ -1,5 +1,6 @@
 # Contribution Guide
 
+このガイドは英語版です。日本語版を求める場合は[ここ](./CONTRIBUTING_JP.md)を閲覧してください。
 This sentence was translated by [Deepl](https://www.deepl.com/translator). If you have trouble understanding the meaning of this sentence, please post it in the [GitHub Discussions](https://github.com/haruki7049/hrtor/discussions). Our collaborators will respond.
 
 If you have questions, please post them in [GitHub Discussion for hrtor](https://github.com/haruki7049/hrtor/discussions) as [Q&A Category](https://github.com/haruki7049/hrtor/discussions/categories/q-a).

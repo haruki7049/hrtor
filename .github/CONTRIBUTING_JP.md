@@ -37,8 +37,6 @@ Wanna create a new milestone for hrtor:v0.1.1?
 2. Issueに対応させたPullRequestを作成する。作成方法は[GitHub Docs](https://docs.github.com/en/issues/tracking-your-work-with-issues/linking-a-pull-request-to-an-issue)を参照してください。
 3. PullRequestにレビューをもらい、マージ。
 
-この際、CI/CDが成功している事を確認してからPullRequestを作成しましょう。
-
 ## CI/CDの追加
 
 現在、GitHub Actionsはrust-checkerのみ動作しています。以下にrust-checkerの説明を記載します。
@@ -51,7 +49,6 @@ Wanna create a new milestone for hrtor:v0.1.1?
 
 ## Review
 
-レビューを貰う前には必ずCI/CDが成功している事を確認してください。
 レビューを貰いマージが出来るようになった後には以下の点を確認してください。
 
 - `Create a merge commit`でマージしてください。

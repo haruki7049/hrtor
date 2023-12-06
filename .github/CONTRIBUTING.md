@@ -38,8 +38,6 @@ Follow the flow below:
 2. Create a PullRequest for the Issue. See [GitHub Docs](https://docs.github.com/en/issues/tracking-your-work-with-issues/linking-a-pull-request-to-an-issue) for how to do this.
 3. Have the PullRequest reviewed and merge it.
 
-At this time, make sure that CI/CD is successful before creating the PullRequest.
-
 ## Adding CI/CD
 
 Currently, only rust-checker is working for GitHub Actions. The following is a description of rust-checker.
@@ -52,7 +50,6 @@ If you have other work that should be done using CI/CD, please post an Issue wit
 
 ## Review
 
-Before getting a review, please make sure that CI/CD has succeeded.
 After getting a review and being able to merge, please check the following points.
 
 - Merge with `Create a merge commit`.

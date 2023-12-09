@@ -1,5 +1,5 @@
 # hrtor
-hrtor("ハルター", "ヘルトル") is HaRuki's scalable line ediTOR.
+hrtor("hərtər", "ハルター", "ハーター", "ヘルター", "ヘルトル") is HaRuki's scalable line ediTOR.
 
 # Usage
 ```bash

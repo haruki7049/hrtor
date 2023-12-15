@@ -38,11 +38,26 @@ fn main() -> Result<(), Box<dyn Error>> {
         });
 
         // loading each commands' alias
-        exit = commands_table.get("exit").unwrap();
-        print = commands_table.get("print").unwrap();
-        write = commands_table.get("write").unwrap();
-        add = commands_table.get("add").unwrap();
-        delete_all = commands_table.get("delete_all").unwrap();
+        exit = commands_table.get("exit").unwrap_or_else(|_| {
+            eprintln!("cannot load exit command");
+            String::new()
+        });
+        print = commands_table.get("print").unwrap_or_else(|_| {
+            eprintln!("cannot load print command");
+            String::new()
+        });
+        write = commands_table.get("write").unwrap_or_else(|_| {
+            eprintln!("cannot load write command");
+            String::new()
+        });
+        add = commands_table.get("add").unwrap_or_else(|_| {
+            eprintln!("cannot load add command");
+            String::new()
+        });
+        delete_all = commands_table.get("delete_all").unwrap_or_else(|_| {
+            eprintln!("cannot load delete_all command");
+            String::new()
+        });
 
     });
 

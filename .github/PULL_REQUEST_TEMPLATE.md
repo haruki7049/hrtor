@@ -2,7 +2,7 @@
 **Why?**
 
 # Changes
-**What?**
+**What was changed?**
 
 # Scope 
 **Describe this PullRequest's scope of Impact**

@@ -1,7 +1,11 @@
-commands = {
-  exit = "q",
-  add = "a",
-  delete_all = "dA",
-  write = "w",
-  print = "p",
-}
+hrtor.register_command(
+  hrtor.command.new {
+    action = function()
+      hrtor.api.echo('FooFoo!!')
+      hrtor.api.quit()
+    end,
+    trigger = {
+      'q'
+    },
+  }
+)

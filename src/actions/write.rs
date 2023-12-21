@@ -1,11 +1,11 @@
 use crate::{CommandStatus, Hrtor};
 
-use super::result_ok;
+use super::command_status_ok;
 
 impl Hrtor<'_> {
     pub(crate) fn write(&self) -> CommandStatus {
         save_file(&self.editing_file.path, &self.editing_file.context);
-        result_ok()
+        command_status_ok()
     }
 }
 

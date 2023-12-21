@@ -20,45 +20,17 @@ fn main() -> Result<(), Box<dyn Error>> {
     let config: FileInfo = get_config_info().unwrap();
 
     // commands declaration
-    let mut exit: String = String::from("");
-    let mut print: String = String::from("");
-    let mut write: String = String::from("");
-    let mut add: String = String::from("");
-    let mut delete_all: String = String::from("");
+    let exit: String = String::from("exit");
+    let print: String = String::from("print");
+    let write: String = String::from("write");
+    let add: String = String::from("add");
+    let delete_all: String = String::from("delete_all");
 
     // lua_script
     let lua: Lua = Lua::new();
     lua.context(|lua_context| {
         // lua_script loading
         let _ = lua_context.load(&config.context).exec();
-
-        let commands_table: rlua::Table = lua_context.globals().get("commands").unwrap_or_else(|_| {
-            eprintln!("cannot load commands' table in config file. you may not exit hrtor's command. YOU CAN USE CONTROL+D to exit.");
-            lua_context.create_table().unwrap()
-        });
-
-        // loading each commands' alias
-        exit = commands_table.get("exit").unwrap_or_else(|_| {
-            eprintln!("cannot load exit command");
-            String::new()
-        });
-        print = commands_table.get("print").unwrap_or_else(|_| {
-            eprintln!("cannot load print command");
-            String::new()
-        });
-        write = commands_table.get("write").unwrap_or_else(|_| {
-            eprintln!("cannot load write command");
-            String::new()
-        });
-        add = commands_table.get("add").unwrap_or_else(|_| {
-            eprintln!("cannot load add command");
-            String::new()
-        });
-        delete_all = commands_table.get("delete_all").unwrap_or_else(|_| {
-            eprintln!("cannot load delete_all command");
-            String::new()
-        });
-
     });
 
     // mainloop by linefeed

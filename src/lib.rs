@@ -1,7 +1,4 @@
-use std::{
-    cell::RefCell,
-    sync::{Arc, Mutex},
-};
+use std::sync::{Arc, Mutex};
 
 use file_loader::FileInfo;
 use linefeed::ReadResult;
@@ -26,7 +23,7 @@ impl Hrtor {
     }
 }
 
-impl<'a> Hrtor {
+impl Hrtor {
     pub fn load_luascript(&mut self, entrypoint: FileInfo) {
         self.user_scripts.push(Box::new(LuaScript {
             hrtor: Arc::clone(&self.processor),
@@ -55,7 +52,7 @@ pub enum CommandResult {
 
 impl HrtorProcessor {
     /// Interpret CommandStatus without Input loop
-    pub(crate) fn interpret_command_status(&self, status: CommandStatus) -> () {
+    pub(crate) fn interpret_command_status(&self, status: CommandStatus) {
         match status {
             CommandStatus::Continue(CommandResult::Ok) => (),
             CommandStatus::Continue(CommandResult::NotFound(name)) => {

@@ -1,6 +1,6 @@
 use std::sync::Arc;
 
-use rlua::{Lua, Value};
+use rlua::Lua;
 
 use crate::{file_loader::FileInfo, HrtorProcessor};
 

@@ -39,7 +39,7 @@ pub fn get_config_info() -> Result<FileInfo, Box<dyn Error>> {
             println!("failed to load config file");
             String::from("")
         }),
-        context: std::fs::read_to_string(app.config.clone().unwrap_or_else(String::new))
+        context: std::fs::read_to_string(app.config.clone().unwrap_or_default())
             .unwrap_or_else(|_| String::new()),
     })
 }

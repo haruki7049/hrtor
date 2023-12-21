@@ -6,9 +6,7 @@ use hrtor::{
 
 use linefeed::Interface;
 use std::{
-    cell::RefCell,
     error::Error,
-    rc::Rc,
     sync::{Arc, Mutex},
 };
 

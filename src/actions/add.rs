@@ -1,4 +1,5 @@
-use crate::{result_ok, CommandStatus, Hrtor};
+use crate::{CommandStatus, Hrtor};
+use super::result_ok;
 
 impl Hrtor {
     pub(crate) fn add(&mut self) -> CommandStatus {

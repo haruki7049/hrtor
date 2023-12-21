@@ -1,6 +1,8 @@
+use std::{cell::RefCell, rc::Rc};
+
 use file_loader::FileInfo;
 use linefeed::ReadResult;
-use user_script::UserScript;
+use user_script::{lua::LuaScript, UserScript};
 
 mod actions;
 pub mod constants;
@@ -8,8 +10,38 @@ pub mod file_loader;
 pub mod user_script;
 
 pub struct Hrtor<'a> {
-    pub editing_file: FileInfo,
-    pub user_script: UserScript<'a>,
+    pub processor: &'a HrtorProcessor,
+    user_scripts: Vec<Box<dyn UserScript + 'a>>,
+}
+
+impl<'a> Hrtor<'a> {
+    pub fn new(processor: &'a HrtorProcessor) -> Self {
+        Self {
+            processor,
+            user_scripts: vec![],
+        }
+    }
+}
+
+impl<'a> Hrtor<'a> {
+    fn get_hrtor_processor(&self) -> &'a HrtorProcessor {
+        &self.processor
+    }
+    pub fn load_luascript(&mut self, entrypoint: FileInfo) {
+        self.user_scripts.push(Box::new(LuaScript {
+            hrtor: self.get_hrtor_processor(),
+            entrypoint,
+        }));
+    }
+    pub fn init(&self) {
+        for script in &self.user_scripts {
+            script.init();
+        }
+    }
+}
+
+pub struct HrtorProcessor {
+    pub editing_file: Rc<RefCell<FileInfo>>,
 }
 
 pub enum CommandStatus {
@@ -21,8 +53,8 @@ pub enum CommandResult {
     NotFound(String),
 }
 
-impl Hrtor<'_> {
-    pub fn handle_command(&mut self, command: ReadResult) -> CommandStatus {
+impl HrtorProcessor {
+    pub fn handle_command(&self, command: ReadResult) -> CommandStatus {
         match command {
             ReadResult::Input(str) => {
                 if str == "exit" {

@@ -1,10 +1,13 @@
-use crate::{CommandStatus, Hrtor};
+use crate::{CommandStatus, HrtorProcessor};
 
 use super::command_status_ok;
 
-impl Hrtor<'_> {
+impl HrtorProcessor {
     pub(crate) fn write(&self) -> CommandStatus {
-        save_file(&self.editing_file.path, &self.editing_file.context);
+        {
+            let editing_file = self.editing_file.borrow();
+            save_file(&editing_file.path, &editing_file.context);
+        }
         command_status_ok()
     }
 }

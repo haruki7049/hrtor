@@ -1,9 +1,12 @@
 use super::command_status_ok;
-use crate::{CommandStatus, Hrtor};
+use crate::{CommandStatus, HrtorProcessor};
 
-impl Hrtor<'_> {
-    pub(crate) fn add(&mut self) -> CommandStatus {
-        self.editing_file.context = push_context();
+impl HrtorProcessor {
+    pub(crate) fn add(&self) -> CommandStatus {
+        let new_context = push_context();
+        {
+            self.editing_file.borrow_mut().context = new_context;
+        }
         command_status_ok()
     }
 }

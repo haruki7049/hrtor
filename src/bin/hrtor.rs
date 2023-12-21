@@ -1,12 +1,11 @@
 use hrtor::{
     constants::PROMPT,
     file_loader::{get_config_info, get_file_info, FileInfo},
-    user_script::UserScript,
-    CommandResult, CommandStatus, Hrtor,
+    CommandResult, CommandStatus, Hrtor, HrtorProcessor,
 };
 
 use linefeed::Interface;
-use std::error::Error;
+use std::{cell::RefCell, error::Error, rc::Rc};
 
 /// main function
 fn main() -> Result<(), Box<dyn Error>> {
@@ -19,18 +18,18 @@ fn main() -> Result<(), Box<dyn Error>> {
     // read config file
     let config: FileInfo = get_config_info().unwrap();
 
-    let mut instance: Hrtor<'a> = Hrtor {
-        editing_file: file,
-        user_script: UserScript {
-            hrtor: 
-            lua_entrypoint: config,
-        },
+    let mut processor = HrtorProcessor {
+        editing_file: Rc::new(RefCell::new(file)),
     };
+
+    let mut instance = Hrtor::new(&mut processor);
+    instance.load_luascript(config);
+    instance.init();
 
     // mainloop by linefeed
     while let CommandStatus::Continue(result) = {
         let read = reader.read_line().unwrap();
-        instance.handle_command(read)
+        instance.processor.handle_command(read)
     } {
         match result {
             CommandResult::Ok => {}

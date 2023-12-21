@@ -1,4 +1,7 @@
-use std::{cell::RefCell, rc::Rc};
+use std::{
+    cell::RefCell,
+    sync::{Arc, Mutex},
+};
 
 use file_loader::FileInfo;
 use linefeed::ReadResult;
@@ -9,27 +12,24 @@ pub mod constants;
 pub mod file_loader;
 pub mod user_script;
 
-pub struct Hrtor<'a> {
-    pub processor: &'a HrtorProcessor,
-    user_scripts: Vec<Box<dyn UserScript + 'a>>,
+pub struct Hrtor {
+    pub processor: Arc<HrtorProcessor>,
+    user_scripts: Vec<Box<dyn UserScript>>,
 }
 
-impl<'a> Hrtor<'a> {
-    pub fn new(processor: &'a HrtorProcessor) -> Self {
+impl Hrtor {
+    pub fn new(processor: HrtorProcessor) -> Self {
         Self {
-            processor,
+            processor: processor.into(),
             user_scripts: vec![],
         }
     }
 }
 
-impl<'a> Hrtor<'a> {
-    fn get_hrtor_processor(&self) -> &'a HrtorProcessor {
-        &self.processor
-    }
+impl<'a> Hrtor {
     pub fn load_luascript(&mut self, entrypoint: FileInfo) {
         self.user_scripts.push(Box::new(LuaScript {
-            hrtor: self.get_hrtor_processor(),
+            hrtor: Arc::clone(&self.processor),
             entrypoint,
         }));
     }
@@ -41,7 +41,7 @@ impl<'a> Hrtor<'a> {
 }
 
 pub struct HrtorProcessor {
-    pub editing_file: Rc<RefCell<FileInfo>>,
+    pub editing_file: Arc<Mutex<FileInfo>>,
 }
 
 pub enum CommandStatus {
@@ -51,6 +51,22 @@ pub enum CommandStatus {
 pub enum CommandResult {
     Ok,
     NotFound(String),
+}
+
+impl HrtorProcessor {
+    /// Interpret CommandStatus without Input loop
+    pub(crate) fn interpret_command_status(&self, status: CommandStatus) -> () {
+        match status {
+            CommandStatus::Continue(CommandResult::Ok) => (),
+            CommandStatus::Continue(CommandResult::NotFound(name)) => {
+                panic!("unknown command: {:?}", name);
+            }
+            CommandStatus::Quit => {
+                // Exit status zero
+                std::process::exit(0);
+            }
+        }
+    }
 }
 
 impl HrtorProcessor {

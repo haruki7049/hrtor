@@ -5,7 +5,12 @@ use hrtor::{
 };
 
 use linefeed::Interface;
-use std::{cell::RefCell, error::Error, rc::Rc};
+use std::{
+    cell::RefCell,
+    error::Error,
+    rc::Rc,
+    sync::{Arc, Mutex},
+};
 
 /// main function
 fn main() -> Result<(), Box<dyn Error>> {
@@ -18,11 +23,9 @@ fn main() -> Result<(), Box<dyn Error>> {
     // read config file
     let config: FileInfo = get_config_info().unwrap();
 
-    let mut processor = HrtorProcessor {
-        editing_file: Rc::new(RefCell::new(file)),
-    };
-
-    let mut instance = Hrtor::new(&mut processor);
+    let mut instance = Hrtor::new(HrtorProcessor {
+        editing_file: Arc::new(Mutex::new(file)),
+    });
     instance.load_luascript(config);
     instance.init();
 

@@ -5,7 +5,7 @@ impl HrtorProcessor {
     pub(crate) fn add(&self) -> CommandStatus {
         let new_context = push_context();
         {
-            self.editing_file.borrow_mut().context = new_context;
+            self.editing_file.lock().unwrap().context = new_context;
         }
         command_status_ok()
     }

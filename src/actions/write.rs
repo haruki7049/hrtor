@@ -5,7 +5,7 @@ use super::command_status_ok;
 impl HrtorProcessor {
     pub(crate) fn write(&self) -> CommandStatus {
         {
-            let editing_file = self.editing_file.borrow();
+            let editing_file = self.editing_file.lock().unwrap();
             save_file(&editing_file.path, &editing_file.context);
         }
         command_status_ok()

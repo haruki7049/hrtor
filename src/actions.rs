@@ -13,14 +13,14 @@ impl HrtorProcessor {
     }
     pub(crate) fn delete_all(&self) -> CommandStatus {
         {
-            self.editing_file.borrow_mut().context = String::new();
+            let mut editing_file = self.editing_file.lock().unwrap();
+            editing_file.context.clear();
         }
         command_status_ok()
     }
     pub(crate) fn print(&self) -> CommandStatus {
-        {
-            println!("{}", self.editing_file.borrow().context);
-        }
+        let context = { &self.editing_file.lock().unwrap().context };
+        println!("{}", context);
         command_status_ok()
     }
 }

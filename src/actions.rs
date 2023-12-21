@@ -1,9 +1,9 @@
-use crate::{Hrtor, CommandStatus, CommandResult};
+use crate::{CommandResult, CommandStatus, Hrtor};
 
 pub mod add;
 pub mod write;
 
-pub(self) fn result_ok() -> CommandStatus {
+fn result_ok() -> CommandStatus {
     CommandStatus::Continue(CommandResult::Ok)
 }
 

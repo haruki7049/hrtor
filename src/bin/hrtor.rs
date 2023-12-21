@@ -1,16 +1,16 @@
 use hrtor::{
-    commands::io::{push_context, save_file},
     constants::PROMPT,
     file_loader::{get_config_info, get_file_info, FileInfo},
+    user_script::UserScript,
+    CommandResult, CommandStatus, Hrtor,
 };
 
-use linefeed::{Interface, ReadResult};
-use rlua::Lua;
+use linefeed::Interface;
 use std::error::Error;
 
 /// main function
 fn main() -> Result<(), Box<dyn Error>> {
-    let mut file: FileInfo = get_file_info().unwrap();
+    let file: FileInfo = get_file_info().unwrap();
 
     // create interpreter by linefeed
     let reader = Interface::new(PROMPT).unwrap();
@@ -19,70 +19,22 @@ fn main() -> Result<(), Box<dyn Error>> {
     // read config file
     let config: FileInfo = get_config_info().unwrap();
 
-    // commands declaration
-    let mut exit: String = String::from("");
-    let mut print: String = String::from("");
-    let mut write: String = String::from("");
-    let mut add: String = String::from("");
-    let mut delete_all: String = String::from("");
-
-    // lua_script
-    let lua: Lua = Lua::new();
-    lua.context(|lua_context| {
-        // lua_script loading
-        let _ = lua_context.load(&config.context).exec();
-
-        let commands_table: rlua::Table = lua_context.globals().get("commands").unwrap_or_else(|_| {
-            eprintln!("cannot load commands' table in config file. you may not exit hrtor's command. YOU CAN USE CONTROL+D to exit.");
-            lua_context.create_table().unwrap()
-        });
-
-        // loading each commands' alias
-        exit = commands_table.get("exit").unwrap_or_else(|_| {
-            eprintln!("cannot load exit command");
-            String::new()
-        });
-        print = commands_table.get("print").unwrap_or_else(|_| {
-            eprintln!("cannot load print command");
-            String::new()
-        });
-        write = commands_table.get("write").unwrap_or_else(|_| {
-            eprintln!("cannot load write command");
-            String::new()
-        });
-        add = commands_table.get("add").unwrap_or_else(|_| {
-            eprintln!("cannot load add command");
-            String::new()
-        });
-        delete_all = commands_table.get("delete_all").unwrap_or_else(|_| {
-            eprintln!("cannot load delete_all command");
-            String::new()
-        });
-
-    });
+    let mut instance = Hrtor {
+        editing_file: file,
+        user_script: UserScript {
+            lua_entrypoint: config,
+        },
+    };
 
     // mainloop by linefeed
-    while let ReadResult::Input(input) = reader.read_line().unwrap() {
-        // let input = input.parse::<Commands>().unwrap();
-        match input {
-            cmd if cmd == print => {
-                println!("{}", &file.context);
-            }
-            cmd if cmd == write => {
-                save_file(&file.path, &file.context);
-            }
-            cmd if cmd == add => {
-                file.context = push_context();
-            }
-            cmd if cmd == delete_all => {
-                file.context = String::new();
-                println!("Deleted all in buffer's context");
-            }
-            cmd if cmd == exit => {
-                break;
-            }
-            _ => {
-                eprintln!("unknown command: {:?}", input);
+    while let CommandStatus::Continue(result) = {
+        let read = reader.read_line().unwrap();
+        instance.handle_command(read)
+    } {
+        match result {
+            CommandResult::Ok => {}
+            CommandResult::NotFound(name) => {
+                eprintln!("unknown command: {:?}", name);
             }
         }
     }

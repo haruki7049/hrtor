@@ -1,5 +1,15 @@
+use super::command_status_ok;
+use crate::{CommandStatus, Hrtor};
+
+impl Hrtor {
+    pub(crate) fn add(&mut self) -> CommandStatus {
+        self.editing_file.context = push_context();
+        command_status_ok()
+    }
+}
+
 /// get some context from standard input, and return String
-pub fn push_context() -> String {
+fn push_context() -> String {
     let mut inputed_text: String = String::new();
     loop {
         let mut last_line: String = String::new();
@@ -20,13 +30,4 @@ pub fn push_context() -> String {
         inputed_text.push_str(&last_line);
     }
     inputed_text
-}
-
-/// save file
-pub fn save_file(filepath: &String, file_context: &String) {
-    if let Err(err) = std::fs::write(filepath, file_context) {
-        eprintln!("Error saving file: {}", err);
-    } else {
-        println!("file saved successfully");
-    }
 }

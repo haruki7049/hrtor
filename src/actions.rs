@@ -7,7 +7,7 @@ fn result_ok() -> CommandStatus {
     CommandStatus::Continue(CommandResult::Ok)
 }
 
-impl Hrtor {
+impl Hrtor<'_> {
     pub(crate) fn quit(&self) -> CommandStatus {
         CommandStatus::Quit
     }

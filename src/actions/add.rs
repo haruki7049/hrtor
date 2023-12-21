@@ -1,7 +1,7 @@
 use super::result_ok;
 use crate::{CommandStatus, Hrtor};
 
-impl Hrtor {
+impl Hrtor<'_> {
     pub(crate) fn add(&mut self) -> CommandStatus {
         self.editing_file.context = push_context();
         result_ok()

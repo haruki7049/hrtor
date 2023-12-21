@@ -19,9 +19,10 @@ fn main() -> Result<(), Box<dyn Error>> {
     // read config file
     let config: FileInfo = get_config_info().unwrap();
 
-    let mut instance = Hrtor {
+    let mut instance: Hrtor<'a> = Hrtor {
         editing_file: file,
         user_script: UserScript {
+            hrtor: 
             lua_entrypoint: config,
         },
     };

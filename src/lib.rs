@@ -7,9 +7,9 @@ pub mod constants;
 pub mod file_loader;
 pub mod user_script;
 
-pub struct Hrtor {
+pub struct Hrtor<'a> {
     pub editing_file: FileInfo,
-    pub user_script: UserScript,
+    pub user_script: UserScript<'a>,
 }
 
 pub enum CommandStatus {
@@ -21,7 +21,7 @@ pub enum CommandResult {
     NotFound(String),
 }
 
-impl Hrtor {
+impl Hrtor<'_> {
     pub fn handle_command(&mut self, command: ReadResult) -> CommandStatus {
         match command {
             ReadResult::Input(str) => {

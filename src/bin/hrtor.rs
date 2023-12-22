@@ -18,13 +18,15 @@ fn main() -> Result<(), Box<dyn Error>> {
     let reader = Interface::new(PROMPT).unwrap();
     reader.set_prompt(PROMPT.to_string().as_ref()).unwrap();
 
-    // read config file
-    let config: FileInfo = get_config_info().unwrap();
-
     let mut instance = Hrtor::new(HrtorProcessor {
         editing_file: Arc::new(Mutex::new(file)),
     });
-    instance.load_luascript(config);
+
+    // read config file
+    if let Some(config) = get_config_info() {
+        instance.load_luascript(config);
+    }
+
     instance.init();
 
     // mainloop by linefeed

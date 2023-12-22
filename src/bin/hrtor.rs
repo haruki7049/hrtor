@@ -36,13 +36,12 @@ fn main() -> Result<(), Box<dyn Error>> {
     } {
         match result {
             CommandResult::Ok => {}
+            CommandResult::NothingToDo => {}
             CommandResult::NotFound(name) => {
                 eprintln!("unknown command: {:?}", name);
             }
         }
     }
-
-    // Good bye message
     println!("Bye!!");
     Ok(())
 }

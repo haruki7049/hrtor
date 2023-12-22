@@ -36,15 +36,11 @@ pub fn get_config_info() -> Option<FileInfo> {
     let app = AppArg::parse();
     let path = app.config;
     match std::fs::read_to_string(&path) {
-        Ok(context) => {
-            Some(FileInfo {
-                path, context
-            })
-        },
+        Ok(context) => Some(FileInfo { path, context }),
         Err(ref error) if error.kind() == ErrorKind::NotFound => {
             println!("Failed to load config: {} is not found.", path);
             None
-        },
+        }
         Err(e) => {
             panic!("An error occured during loading {}: {:?}", path, e);
         }

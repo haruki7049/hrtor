@@ -1,7 +1,7 @@
 use std::sync::{Arc, Mutex};
 
 use file_loader::FileInfo;
-use linefeed::ReadResult;
+use linefeed::{ReadResult, Signal};
 use user_script::{lua::LuaScript, UserScript};
 
 mod actions;
@@ -48,6 +48,7 @@ pub enum CommandStatus {
 pub enum CommandResult {
     Ok,
     NotFound(String),
+    NothingToDo,
 }
 
 impl HrtorProcessor {
@@ -55,11 +56,13 @@ impl HrtorProcessor {
     pub(crate) fn interpret_command_status(&self, status: CommandStatus) {
         match status {
             CommandStatus::Continue(CommandResult::Ok) => (),
+            CommandStatus::Continue(CommandResult::NothingToDo) => (),
             CommandStatus::Continue(CommandResult::NotFound(name)) => {
                 panic!("unknown command: {:?}", name);
             }
             CommandStatus::Quit => {
                 // Exit status zero
+                println!("Bye!!");
                 std::process::exit(0);
             }
         }
@@ -87,10 +90,10 @@ impl HrtorProcessor {
                 }
                 CommandStatus::Continue(CommandResult::NotFound(str))
             }
-            _ => {
-                eprintln!("Unexpected Result!");
-                CommandStatus::Quit
-            }
+            ReadResult::Eof
+            | ReadResult::Signal(Signal::Interrupt)
+            | ReadResult::Signal(Signal::Quit) => CommandStatus::Quit,
+            _ => CommandStatus::Continue(CommandResult::NothingToDo),
         }
     }
 }

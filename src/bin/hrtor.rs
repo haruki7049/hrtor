@@ -1,93 +1,47 @@
 use hrtor::{
-    commands::io::{push_context, save_file},
     constants::PROMPT,
     file_loader::{get_config_info, get_file_info, FileInfo},
+    CommandResult, CommandStatus, Hrtor, HrtorProcessor,
 };
 
-use linefeed::{Interface, ReadResult};
-use rlua::Lua;
-use std::error::Error;
+use linefeed::Interface;
+use std::{
+    error::Error,
+    sync::{Arc, Mutex},
+};
 
 /// main function
 fn main() -> Result<(), Box<dyn Error>> {
-    let mut file: FileInfo = get_file_info().unwrap();
+    let file: FileInfo = get_file_info().unwrap();
 
     // create interpreter by linefeed
     let reader = Interface::new(PROMPT).unwrap();
     reader.set_prompt(PROMPT.to_string().as_ref()).unwrap();
 
-    // read config file
-    let config: FileInfo = get_config_info().unwrap();
-
-    // commands declaration
-    let mut exit: String = String::from("");
-    let mut print: String = String::from("");
-    let mut write: String = String::from("");
-    let mut add: String = String::from("");
-    let mut delete_all: String = String::from("");
-
-    // lua_script
-    let lua: Lua = Lua::new();
-    lua.context(|lua_context| {
-        // lua_script loading
-        let _ = lua_context.load(&config.context).exec();
-
-        let commands_table: rlua::Table = lua_context.globals().get("commands").unwrap_or_else(|_| {
-            eprintln!("cannot load commands' table in config file. you may not exit hrtor's command. YOU CAN USE CONTROL+D to exit.");
-            lua_context.create_table().unwrap()
-        });
-
-        // loading each commands' alias
-        exit = commands_table.get("exit").unwrap_or_else(|_| {
-            eprintln!("cannot load exit command");
-            String::new()
-        });
-        print = commands_table.get("print").unwrap_or_else(|_| {
-            eprintln!("cannot load print command");
-            String::new()
-        });
-        write = commands_table.get("write").unwrap_or_else(|_| {
-            eprintln!("cannot load write command");
-            String::new()
-        });
-        add = commands_table.get("add").unwrap_or_else(|_| {
-            eprintln!("cannot load add command");
-            String::new()
-        });
-        delete_all = commands_table.get("delete_all").unwrap_or_else(|_| {
-            eprintln!("cannot load delete_all command");
-            String::new()
-        });
-
+    let mut instance = Hrtor::new(HrtorProcessor {
+        editing_file: Arc::new(Mutex::new(file)),
     });
 
+    // read config file
+    if let Some(config) = get_config_info() {
+        instance.load_luascript(config);
+    }
+
+    instance.init();
+
     // mainloop by linefeed
-    while let ReadResult::Input(input) = reader.read_line().unwrap() {
-        // let input = input.parse::<Commands>().unwrap();
-        match input {
-            cmd if cmd == print => {
-                println!("{}", &file.context);
-            }
-            cmd if cmd == write => {
-                save_file(&file.path, &file.context);
-            }
-            cmd if cmd == add => {
-                file.context = push_context();
-            }
-            cmd if cmd == delete_all => {
-                file.context = String::new();
-                println!("Deleted all in buffer's context");
-            }
-            cmd if cmd == exit => {
-                break;
-            }
-            _ => {
-                eprintln!("unknown command: {:?}", input);
+    while let CommandStatus::Continue(result) = {
+        let read = reader.read_line().unwrap();
+        instance.processor.handle_command(read)
+    } {
+        match result {
+            CommandResult::Ok => {}
+            CommandResult::NothingToDo => {}
+            CommandResult::NotFound(name) => {
+                eprintln!("unknown command: {:?}", name);
             }
         }
     }
-
-    // Good bye message
     println!("Bye!!");
     Ok(())
 }

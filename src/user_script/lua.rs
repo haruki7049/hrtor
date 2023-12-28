@@ -39,7 +39,7 @@ impl UserScript for LuaScript {
                     let result: Table = ctx.create_table().unwrap();
 
                     result.set("action", table.get::<&str, Function>("action").unwrap()).unwrap();
-                    let _ = result.set("trigger", table.get::<&str, Table>("trigger").unwrap());
+                    result.set("trigger", table.get::<&str, Table>("trigger").unwrap()).unwrap();
 
                     Ok(table)
                 })

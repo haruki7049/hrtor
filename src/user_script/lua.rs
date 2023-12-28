@@ -38,8 +38,12 @@ impl UserScript for LuaScript {
                 .create_function(move |ctx, (table,): (Table,)| {
                     let result: Table = ctx.create_table().unwrap();
 
-                    result.set("action", table.get::<&str, Function>("action").unwrap()).unwrap();
-                    result.set("trigger", table.get::<&str, Table>("trigger").unwrap()).unwrap();
+                    result
+                        .set("action", table.get::<&str, Function>("action").unwrap())
+                        .unwrap();
+                    result
+                        .set("trigger", table.get::<&str, Table>("trigger").unwrap())
+                        .unwrap();
 
                     Ok(table)
                 })

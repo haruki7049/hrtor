@@ -1,6 +1,6 @@
 use std::sync::Arc;
 
-use rlua::Lua;
+use rlua::{Function, Lua, Table};
 
 use crate::{file_loader::FileInfo, HrtorProcessor};
 
@@ -34,11 +34,26 @@ impl UserScript for LuaScript {
                 })
                 .unwrap();
 
+            let new_func: Function = ctx
+                .create_function(move |ctx, (table,): (Table,)| {
+                    let result: Table = ctx.create_table().unwrap();
+
+                    let _ = result.set("action", table.get::<&str, Function>("action").unwrap());
+                    let _ = result.set("trigger", table.get::<&str, Table>("trigger").unwrap());
+
+                    Ok(table)
+                })
+                .unwrap();
+
             let api = ctx
                 .create_table_from(vec![("quit", quit_func), ("echo", echo_func)])
                 .unwrap();
 
-            let hrtor = ctx.create_table_from(vec![("api", api)]).unwrap();
+            let command: Table = ctx.create_table_from(vec![("new", new_func)]).unwrap();
+
+            let hrtor = ctx
+                .create_table_from(vec![("api", api), ("command", command)])
+                .unwrap();
 
             globals.set("hrtor", hrtor).unwrap();
 

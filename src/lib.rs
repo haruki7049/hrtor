@@ -25,10 +25,10 @@ impl Hrtor {
 
 impl Hrtor {
     pub fn load_luascript(&mut self, entrypoint: FileInfo) {
-        self.user_scripts.push(Box::new(LuaScript {
-            hrtor: Arc::clone(&self.processor),
+        self.user_scripts.push(Box::new(LuaScript::new(
+            Arc::clone(&self.processor),
             entrypoint,
-        }));
+        )));
     }
     pub fn init(&self) {
         for script in &self.user_scripts {

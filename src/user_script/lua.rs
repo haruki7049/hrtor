@@ -45,7 +45,7 @@ impl UserScript for LuaScript {
                         .set("trigger", table.get::<&str, Table>("trigger").unwrap())
                         .unwrap();
 
-                    Ok(table)
+                    Ok(result)
                 })
                 .unwrap();
 

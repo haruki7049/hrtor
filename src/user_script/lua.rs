@@ -49,15 +49,24 @@ impl UserScript for LuaScript {
                 })
                 .unwrap();
 
+            let register_func: Function = ctx.create_function(move |ctx, (table,): (Table,)| {
+                let result: Table = ctx.create_table().unwrap();
+
+                result.set("", table.get::<&str, Function>("").unwrap()).unwrap();
+
+                Ok(())
+            }).unwrap();
+
             let api = ctx
                 .create_table_from(vec![("quit", quit_func), ("echo", echo_func)])
                 .unwrap();
 
             let command: Table = ctx.create_table_from(vec![("new", new_func)]).unwrap();
 
-            let hrtor = ctx
-                .create_table_from(vec![("api", api), ("command", command)])
-                .unwrap();
+            let hrtor: Table = ctx.create_table().unwrap();
+            hrtor.set("api", api).unwrap();
+            hrtor.set("command", command).unwrap();
+            hrtor.set("register_command", register_func).unwrap();
 
             globals.set("hrtor", hrtor).unwrap();
 

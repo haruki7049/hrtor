@@ -2,7 +2,7 @@ use std::sync::Arc;
 
 use rlua::{Function, Lua, Table};
 
-use crate::{file_loader::FileInfo, HrtorProcessor};
+use crate::{actions::command_status_ok, file_loader::FileInfo, CommandStatus, HrtorProcessor};
 
 use super::UserScript;
 
@@ -49,13 +49,17 @@ impl UserScript for LuaScript {
                 })
                 .unwrap();
 
-            let register_func: Function = ctx.create_function(move |ctx, (table,): (Table,)| {
-                let result: Table = ctx.create_table().unwrap();
+            let register_func: Function = ctx
+                .create_function(move |ctx, (table,): (Table,)| {
+                    let result: Table = ctx.create_table().unwrap();
 
-                result.set("", table.get::<&str, Function>("").unwrap()).unwrap();
+                    // result
+                    //     .set("", table.get::<&str, Function>("").unwrap())
+                    //     .unwrap();
 
-                Ok(())
-            }).unwrap();
+                    Ok(())
+                })
+                .unwrap();
 
             let api = ctx
                 .create_table_from(vec![("quit", quit_func), ("echo", echo_func)])
@@ -72,5 +76,13 @@ impl UserScript for LuaScript {
 
             ctx.load(&self.entrypoint.context).exec().unwrap();
         });
+    }
+
+    fn request_handle(&self, request: &str) -> Option<CommandStatus> {
+        if request == "papa" {
+            println!("mama!");
+            return Some(command_status_ok());
+        }
+        None
     }
 }

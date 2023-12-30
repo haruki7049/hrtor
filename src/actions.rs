@@ -3,7 +3,7 @@ use crate::{CommandResult, CommandStatus, HrtorProcessor};
 pub mod add;
 pub mod write;
 
-fn command_status_ok() -> CommandStatus {
+pub(crate) fn command_status_ok() -> CommandStatus {
     CommandStatus::Continue(CommandResult::Ok)
 }
 

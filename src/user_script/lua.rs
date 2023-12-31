@@ -1,11 +1,19 @@
+mod internal;
+
 use std::{
     collections::HashMap,
     sync::{mpsc, Arc, Mutex},
+    thread,
 };
 
 use rlua::{Function, Lua, Table};
 
-use crate::{actions::command_status_ok, file_loader::FileInfo, CommandStatus, HrtorProcessor};
+use crate::{
+    actions::command_status_ok, file_loader::FileInfo, user_script::lua::internal::HrtorInternal,
+    CommandStatus, HrtorProcessor,
+};
+
+use self::internal::HrtorInternalFunction;
 
 use super::UserScript;
 
@@ -14,11 +22,7 @@ pub struct LuaScript {
     pub(crate) entrypoint: FileInfo,
     registered_sinatures: Arc<Mutex<Vec<LuaCommandSignature>>>,
     tx: mpsc::Sender<LuaCommandSignature>,
-    rx: mpsc::Receiver<LuaCommandSignature>,
-}
-
-struct LuaCommandExecutor<'lua> {
-    action: Function<'lua>,
+    rx: Arc<Mutex<mpsc::Receiver<LuaCommandSignature>>>,
 }
 
 #[derive(PartialEq, Eq, Hash, Clone)]
@@ -26,12 +30,17 @@ struct LuaCommandSignature {
     trigger: Vec<String>,
 }
 
+#[derive(PartialEq, Eq)]
+struct LuaCommandExecutor {
+    action: HrtorInternalFunction,
+}
+
 impl LuaScript {
     pub fn new(hrtor: Arc<HrtorProcessor>, entrypoint: FileInfo) -> Self {
         let (tx, rx) = mpsc::channel::<LuaCommandSignature>();
         Self {
             tx,
-            rx,
+            rx: Arc::new(Mutex::new(rx)),
             hrtor,
             entrypoint,
             registered_sinatures: Arc::new(Mutex::new(Vec::new())),
@@ -42,96 +51,106 @@ impl LuaScript {
 impl UserScript for LuaScript {
     fn init(&self) {
         println!("Loading {}...", self.entrypoint.path);
-        let lua = Lua::new();
+        let rx = Arc::clone(&self.rx);
         let hrtor = Arc::clone(&self.hrtor);
-        lua.context(move |ctx| {
-            let globals = ctx.globals();
-            let registered_commands = Arc::new(Mutex::new(HashMap::<
-                LuaCommandSignature,
-                LuaCommandExecutor,
-            >::new()));
+        let context = self.entrypoint.context.clone();
+        let registered_sinatures = Arc::clone(&self.registered_sinatures);
+        thread::spawn(move || {
+            let lua = Lua::new();
+            lua.context(move |ctx| {
+                let globals = ctx.globals();
+                let internal = HrtorInternal::new();
+                let registered_commands = Arc::new(Mutex::new(HashMap::<
+                    LuaCommandSignature,
+                    LuaCommandExecutor,
+                >::new()));
 
-            let quit_hrtor = Arc::clone(&hrtor);
-            let quit_func = ctx
-                .create_function(move |_, (): ()| {
-                    quit_hrtor.interpret_command_status(quit_hrtor.quit());
-                    Ok(())
-                })
-                .unwrap();
+                let quit_hrtor = Arc::clone(&hrtor);
+                let quit_func = ctx
+                    .create_function(move |_, (): ()| {
+                        quit_hrtor.interpret_command_status(quit_hrtor.quit());
+                        Ok(())
+                    })
+                    .unwrap();
 
-            let echo_func = ctx
-                .create_function(move |_, (s,): (String,)| {
-                    println!("{}", s);
-                    Ok(())
-                })
-                .unwrap();
+                let echo_func = ctx
+                    .create_function(move |_, (s,): (String,)| {
+                        println!("{}", s);
+                        Ok(())
+                    })
+                    .unwrap();
 
-            let new_func: Function = ctx
-                .create_function(move |ctx, (table,): (Table,)| {
-                    let result: Table = ctx.create_table().unwrap();
+                let new_func: Function = ctx
+                    .create_function(move |ctx, (table,): (Table,)| {
+                        let result: Table = ctx.create_table().unwrap();
 
-                    result
-                        .set("action", table.get::<&str, Function>("action").unwrap())
-                        .unwrap();
-                    result
-                        .set("trigger", table.get::<&str, Table>("trigger").unwrap())
-                        .unwrap();
+                        result
+                            .set("action", table.get::<&str, Function>("action").unwrap())
+                            .unwrap();
+                        result
+                            .set("trigger", table.get::<&str, Table>("trigger").unwrap())
+                            .unwrap();
 
-                    Ok(result)
-                })
-                .unwrap();
+                        Ok(result)
+                    })
+                    .unwrap();
 
-            let registerer_commands = Arc::clone(&registered_commands);
-            let registered_sinatures = Arc::clone(&self.registered_sinatures);
-            let register_func: Function = ctx
-                .create_function(move |_, (table,): (Table,)| {
-                    let action = table.get::<&str, Function>("action").unwrap();
-                    let trigger: Vec<String> = table
-                        .get::<&str, Table>("trigger")
-                        .unwrap()
-                        .sequence_values::<String>()
-                        .collect::<Result<Vec<String>, _>>()
-                        .unwrap();
+                let registerer_commands = Arc::clone(&registered_commands);
+                let register_func: Function = ctx
+                    .create_function(move |ctx, (table,): (Table,)| {
+                        let action = table.get::<&str, Function>("action").unwrap();
+                        let trigger: Vec<String> = table
+                            .get::<&str, Table>("trigger")
+                            .unwrap()
+                            .sequence_values::<String>()
+                            .collect::<Result<Vec<String>, _>>()
+                            .unwrap();
 
-                    let signature = LuaCommandSignature { trigger };
-                    let executor = LuaCommandExecutor { action };
+                        let internal = &internal;
+                        let internal_action = internal.put_function(&ctx, action);
+                        let signature = LuaCommandSignature { trigger };
+                        let executor = LuaCommandExecutor {
+                            action: internal_action,
+                        };
 
-                    registered_sinatures.lock().unwrap().push(signature.clone());
-                    registerer_commands
+                        registered_sinatures.lock().unwrap().push(signature.clone());
+                        registerer_commands
+                            .lock()
+                            .unwrap()
+                            .insert(signature, executor);
+
+                        Ok(())
+                    })
+                    .unwrap();
+
+                let api = ctx
+                    .create_table_from(vec![("quit", quit_func), ("echo", echo_func)])
+                    .unwrap();
+
+                let command: Table = ctx.create_table_from(vec![("new", new_func)]).unwrap();
+
+                let hrtor: Table = ctx.create_table().unwrap();
+                hrtor.set("api", api).unwrap();
+                hrtor.set("command", command).unwrap();
+                hrtor.set("register_command", register_func).unwrap();
+                globals.set("hrtor", hrtor).unwrap();
+
+                HrtorInternal::ready(&ctx);
+                ctx.load(&context).exec().unwrap();
+
+                loop {
+                    let sig = { rx.lock().unwrap().recv().unwrap() };
+                    registered_commands
                         .lock()
                         .unwrap()
-                        .insert(signature, executor);
-
-                    Ok(())
-                })
-                .unwrap();
-
-            let api = ctx
-                .create_table_from(vec![("quit", quit_func), ("echo", echo_func)])
-                .unwrap();
-
-            let command: Table = ctx.create_table_from(vec![("new", new_func)]).unwrap();
-
-            let hrtor: Table = ctx.create_table().unwrap();
-            hrtor.set("api", api).unwrap();
-            hrtor.set("command", command).unwrap();
-            hrtor.set("register_command", register_func).unwrap();
-
-            globals.set("hrtor", hrtor).unwrap();
-
-            ctx.load(&self.entrypoint.context).exec().unwrap();
-
-            loop {
-                let sig = self.rx.recv().unwrap();
-                registered_commands
-                    .lock()
-                    .unwrap()
-                    .get(&sig)
-                    .unwrap()
-                    .action
-                    .call::<(), ()>(())
-                    .unwrap();
-            }
+                        .get(&sig)
+                        .unwrap()
+                        .action
+                        .get(&ctx)
+                        .call::<(), ()>(())
+                        .unwrap();
+                }
+            });
         });
     }
 

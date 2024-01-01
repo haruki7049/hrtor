@@ -21,13 +21,18 @@ pub struct LuaScript {
     pub(crate) hrtor: Arc<HrtorProcessor>,
     pub(crate) entrypoint: FileInfo,
     registered_sinatures: Arc<Mutex<Vec<LuaCommandSignature>>>,
-    tx: mpsc::Sender<LuaCommandSignature>,
-    rx: Arc<Mutex<mpsc::Receiver<LuaCommandSignature>>>,
+    tx: mpsc::Sender<LuaScriptSignal>,
+    rx: Arc<Mutex<mpsc::Receiver<LuaScriptSignal>>>,
 }
 
 #[derive(PartialEq, Eq, Hash, Clone)]
 struct LuaCommandSignature {
     trigger: Vec<String>,
+}
+
+enum LuaScriptSignal {
+    Trigger(LuaCommandSignature),
+    Finish,
 }
 
 #[derive(PartialEq, Eq)]
@@ -37,7 +42,7 @@ struct LuaCommandExecutor {
 
 impl LuaScript {
     pub fn new(hrtor: Arc<HrtorProcessor>, entrypoint: FileInfo) -> Self {
-        let (tx, rx) = mpsc::channel::<LuaCommandSignature>();
+        let (tx, rx) = mpsc::channel::<LuaScriptSignal>();
         Self {
             tx,
             rx: Arc::new(Mutex::new(rx)),
@@ -138,8 +143,7 @@ impl UserScript for LuaScript {
                 HrtorInternal::ready(&ctx);
                 ctx.load(&context).exec().unwrap();
 
-                loop {
-                    let sig = { rx.lock().unwrap().recv().unwrap() };
+                while let LuaScriptSignal::Trigger(sig) = { rx.lock().unwrap().recv().unwrap() } {
                     registered_commands
                         .lock()
                         .unwrap()
@@ -161,8 +165,14 @@ impl UserScript for LuaScript {
             .iter()
             .find(|v| v.trigger.contains(request))
             .map(|v| {
-                self.tx.send(v.clone()).unwrap();
+                self.tx.send(LuaScriptSignal::Trigger(v.clone())).unwrap();
                 command_status_ok()
             })
+    }
+}
+
+impl Drop for LuaScript {
+    fn drop(&mut self) {
+        self.tx.send(LuaScriptSignal::Finish).unwrap();
     }
 }

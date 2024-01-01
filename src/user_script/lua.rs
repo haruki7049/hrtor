@@ -30,8 +30,14 @@ struct LuaCommandSignature {
     trigger: Vec<String>,
 }
 
+#[derive(Clone)]
+struct LuaScriptTriggerRequest {
+    signature: LuaCommandSignature,
+    finish: mpsc::Sender<()>,
+}
+
 enum LuaScriptSignal {
-    Trigger(LuaCommandSignature),
+    Trigger(LuaScriptTriggerRequest),
     Finish,
 }
 
@@ -147,12 +153,13 @@ impl UserScript for LuaScript {
                     registered_commands
                         .lock()
                         .unwrap()
-                        .get(&sig)
+                        .get(&sig.signature)
                         .unwrap()
                         .action
                         .get(&ctx)
                         .call::<(), ()>(())
                         .unwrap();
+                    sig.finish.send(()).unwrap();
                 }
             });
         });
@@ -165,7 +172,14 @@ impl UserScript for LuaScript {
             .iter()
             .find(|v| v.trigger.contains(request))
             .map(|v| {
-                self.tx.send(LuaScriptSignal::Trigger(v.clone())).unwrap();
+                let (finish_tx, finish_rx) = mpsc::channel::<()>();
+                self.tx
+                    .send(LuaScriptSignal::Trigger(LuaScriptTriggerRequest {
+                        signature: v.clone(),
+                        finish: finish_tx,
+                    }))
+                    .unwrap();
+                finish_rx.recv().unwrap();
                 command_status_ok()
             })
     }

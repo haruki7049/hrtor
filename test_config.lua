@@ -9,3 +9,14 @@ hrtor.register_command(
     },
   }
 )
+
+hrtor.register_command(
+  hrtor.command.new {
+    action = function()
+      hrtor.api.echo('mama!!')
+    end,
+    trigger = {
+      'papa'
+    },
+  }
+)

@@ -165,12 +165,12 @@ impl UserScript for LuaScript {
         });
     }
 
-    fn request_handle(&self, request: &String) -> Option<CommandStatus> {
+    fn request_handle(&self, request: &str) -> Option<CommandStatus> {
         self.registered_sinatures
             .lock()
             .unwrap()
             .iter()
-            .find(|v| v.trigger.contains(request))
+            .find(|v| v.trigger.iter().any(|s| s.as_str() == request))
             .map(|v| {
                 let (finish_tx, finish_rx) = mpsc::channel::<()>();
                 self.tx

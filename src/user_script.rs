@@ -10,5 +10,5 @@ pub trait UserScript {
     /// # Returns
     /// - `Some(CommandStatus)` if the request is handled
     /// - `None` if the request is not handled
-    fn request_handle(&self, request: &String) -> Option<CommandStatus>;
+    fn request_handle(&self, request: &str) -> Option<CommandStatus>;
 }

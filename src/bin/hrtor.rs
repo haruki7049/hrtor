@@ -32,7 +32,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     // mainloop by linefeed
     while let CommandStatus::Continue(result) = {
         let read = reader.read_line().unwrap();
-        instance.processor.handle_command(read)
+        instance.processor.handle_command(&instance, read)
     } {
         match result {
             CommandResult::Ok => {}

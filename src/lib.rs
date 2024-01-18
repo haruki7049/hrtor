@@ -25,10 +25,10 @@ impl Hrtor {
 
 impl Hrtor {
     pub fn load_luascript(&mut self, entrypoint: FileInfo) {
-        self.user_scripts.push(Box::new(LuaScript {
-            hrtor: Arc::clone(&self.processor),
+        self.user_scripts.push(Box::new(LuaScript::new(
+            Arc::clone(&self.processor),
             entrypoint,
-        }));
+        )));
     }
     pub fn init(&self) {
         for script in &self.user_scripts {
@@ -70,9 +70,16 @@ impl HrtorProcessor {
 }
 
 impl HrtorProcessor {
-    pub fn handle_command(&self, command: ReadResult) -> CommandStatus {
+    pub fn handle_command(&self, hrtor: &Hrtor, command: ReadResult) -> CommandStatus {
         match command {
             ReadResult::Input(str) => {
+                for script in &hrtor.user_scripts {
+                    let Some(result) = script.request_handle(&str) else {
+                        continue;
+                    };
+                    return result;
+                }
+
                 if str == "exit" {
                     return self.quit();
                 }

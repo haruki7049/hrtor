@@ -2,13 +2,13 @@
 name: Some refactoring
 about: Suggest a refactoring idea
 title: ''
-labels: ''
+labels: 'refactoring'
 assignees: ''
 
 ---
 
-**BODY**
-write here!!
+# Refactoring target files
+**Body**
 
-**Additional context**
-foofoo!!
+# What refactoring to do
+**Body**

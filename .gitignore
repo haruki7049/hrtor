@@ -11,3 +11,6 @@ target/
 
 # Nix's result
 result
+
+# cargo-llvm-cov's result
+coverage/

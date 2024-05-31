@@ -1,10 +1,10 @@
+use clap::Parser;
 use hrtor::{
     constants::PROMPT,
+    file_loader::AppArg,
     file_loader::{get_config_info, get_file_info, FileInfo},
     CommandResult, CommandStatus, Hrtor, HrtorProcessor,
-    file_loader::AppArg,
 };
-use clap::Parser;
 
 use linefeed::Interface;
 use std::{

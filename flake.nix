@@ -50,6 +50,7 @@
         devShells.default = pkgs.mkShell {
           packages = with pkgs; [
             rust
+            cargo-llvm-cov
           ];
 
           shellHook = ''

@@ -21,7 +21,6 @@ pub struct FileInfo {
 
 /// Get file's path and file's context from a CommandLine Argument
 pub fn get_file_info(app: &AppArg) -> Result<FileInfo, Box<dyn Error>> {
-    let app = AppArg::parse();
     Ok(FileInfo {
         path: app.path.clone(),
         context: std::fs::read_to_string(&app.path).unwrap_or_else(|_| {
@@ -33,10 +32,9 @@ pub fn get_file_info(app: &AppArg) -> Result<FileInfo, Box<dyn Error>> {
 
 /// Get config's path and config's context from the config CommandLine Option
 pub fn get_config_info(app: &AppArg) -> Option<FileInfo> {
-    let app = AppArg::parse();
-    let path = app.config;
-    match std::fs::read_to_string(&path) {
-        Ok(context) => Some(FileInfo { path, context }),
+    let path = &app.config;
+    match std::fs::read_to_string(path) {
+        Ok(context) => Some(FileInfo { path: path.to_string(), context }),
         Err(ref error) if error.kind() == ErrorKind::NotFound => {
             println!("Failed to load config: {} is not found.", path);
             None

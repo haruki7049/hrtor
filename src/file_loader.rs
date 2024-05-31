@@ -20,7 +20,7 @@ pub struct FileInfo {
 }
 
 /// Get file's path and file's context from a CommandLine Argument
-pub fn get_file_info() -> Result<FileInfo, Box<dyn Error>> {
+pub fn get_file_info(app: &AppArg) -> Result<FileInfo, Box<dyn Error>> {
     let app = AppArg::parse();
     Ok(FileInfo {
         path: app.path.clone(),
@@ -32,7 +32,7 @@ pub fn get_file_info() -> Result<FileInfo, Box<dyn Error>> {
 }
 
 /// Get config's path and config's context from the config CommandLine Option
-pub fn get_config_info() -> Option<FileInfo> {
+pub fn get_config_info(app: &AppArg) -> Option<FileInfo> {
     let app = AppArg::parse();
     let path = app.config;
     match std::fs::read_to_string(&path) {

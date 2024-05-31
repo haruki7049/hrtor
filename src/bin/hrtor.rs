@@ -27,7 +27,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     });
 
     // read config file
-    if let Some(config) = get_config_info(&app) {
+    if let Ok(config) = get_config_info(&app) {
         instance.load_luascript(config);
     }
 

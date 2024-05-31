@@ -1,5 +1,7 @@
+use clap::Parser;
 use hrtor::{
     constants::PROMPT,
+    file_loader::AppArg,
     file_loader::{get_config_info, get_file_info, FileInfo},
     CommandResult, CommandStatus, Hrtor, HrtorProcessor,
 };
@@ -12,7 +14,9 @@ use std::{
 
 /// main function
 fn main() -> Result<(), Box<dyn Error>> {
-    let file: FileInfo = get_file_info().unwrap();
+    let app: AppArg = AppArg::parse();
+
+    let file: FileInfo = get_file_info(&app).unwrap();
 
     // create interpreter by linefeed
     let reader = Interface::new(PROMPT).unwrap();
@@ -23,7 +27,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     });
 
     // read config file
-    if let Some(config) = get_config_info() {
+    if let Ok(config) = get_config_info(&app) {
         instance.load_luascript(config);
     }
 

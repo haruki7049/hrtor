@@ -12,5 +12,8 @@ target/
 # Nix's result
 result
 
+# Direnv's dotfiles
+.direnv/
+
 # cargo-llvm-cov's result
 coverage/

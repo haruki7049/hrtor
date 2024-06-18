@@ -104,3 +104,22 @@ impl HrtorProcessor {
         }
     }
 }
+
+#[cfg(test)]
+mod test {
+    use crate::HrtorProcessor;
+    use crate::Hrtor;
+    use crate::file_loader::FileInfo;
+    use std::sync::{Arc, Mutex};
+
+    #[test]
+    fn test_handle_command() {
+        let hrtor_processor: HrtorProcessor = HrtorProcessor {
+            editing_file: Arc::new(Mutex::new(FileInfo {
+                path: "test".to_string(),
+                context: "test".to_string(),
+            })),
+        };
+        let hrtor = Hrtor::new(hrtor_processor);
+    }
+}

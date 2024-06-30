@@ -120,6 +120,6 @@ mod test {
                 context: "test".to_string(),
             })),
         };
-        let hrtor = Hrtor::new(hrtor_processor);
+        let _hrtor = Hrtor::new(hrtor_processor);
     }
 }

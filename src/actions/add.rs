@@ -5,9 +5,9 @@ use std::io::StdinLock;
 impl HrtorProcessor {
     pub(crate) fn add(&self) -> CommandStatus {
         let reader: StdinLock = std::io::stdin().lock();
-        let writer: std::io::Stdout = std::io::stdout();
+        let _writer: std::io::Stdout = std::io::stdout();
 
-        let new_context = push_context(reader, writer);
+        let new_context = push_context(reader, _writer);
         {
             self.editing_file.lock().unwrap().context = new_context;
         }
@@ -49,7 +49,7 @@ mod tests {
 
     #[test]
     fn test_push_context() {
-        let mut writer: Vec<u8> = Vec::new();
+        let writer: Vec<u8> = Vec::new();
         let reader = std::io::Cursor::new(b"test\ntest\ntest\n.\n");
         let result = push_context(reader, writer);
         assert_eq!(result, "test\ntest\ntest\n");

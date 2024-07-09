@@ -2,9 +2,10 @@ use clap::Parser;
 use hrtor::{
     constants::PROMPT,
     file_loader::AppArg,
-    file_loader::{get_config_info, get_file_info, FileInfo},
+    file_loader::{get_config_info, get_file_info},
     CommandResult, CommandStatus, Hrtor, HrtorProcessor,
 };
+use hrtor_utils::FileInfo;
 
 use linefeed::DefaultTerminal;
 use linefeed::Interface;

@@ -15,6 +15,7 @@ categories = ["text-editors"]
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+hrtor_utils = { path = "./utils" }
 clap = { version = "4.4.7", features = ["derive"] }
 linefeed = "0.6.0"
 rlua = "0.19.7"

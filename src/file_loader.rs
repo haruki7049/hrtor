@@ -1,5 +1,6 @@
 use clap::Parser;
 use std::error::Error;
+use hrtor_utils::FileInfo;
 
 /// CommandLine Argument
 #[derive(Parser)]
@@ -12,11 +13,6 @@ pub struct AppArg {
     //#[arg(long, default_value_t = String::from("./init.lua"))]
     #[arg(short, long, default_value_t = String::from("./init.lua"), help = "your config file which is as config.lua")]
     pub config: String,
-}
-
-pub struct FileInfo {
-    pub path: String,
-    pub context: String,
 }
 
 /// Get file's path and file's context from a CommandLine Argument

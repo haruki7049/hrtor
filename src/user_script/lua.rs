@@ -9,9 +9,11 @@ use std::{
 use rlua::{Function, Lua, Table};
 
 use crate::{
-    actions::command_status_ok, file_loader::FileInfo, user_script::lua::internal::HrtorInternal,
+    actions::command_status_ok, user_script::lua::internal::HrtorInternal,
     CommandStatus, HrtorProcessor,
 };
+
+use hrtor_utils::FileInfo;
 
 use self::internal::HrtorInternalFunction;
 

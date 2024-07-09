@@ -1,6 +1,6 @@
 use std::sync::{Arc, Mutex};
 
-use file_loader::FileInfo;
+use hrtor_utils::FileInfo;
 use linefeed::{ReadResult, Signal};
 use user_script::{lua::LuaScript, UserScript};
 
@@ -107,7 +107,7 @@ impl HrtorProcessor {
 
 #[cfg(test)]
 mod test {
-    use crate::file_loader::FileInfo;
+    use hrtor_utils::FileInfo;
     use crate::Hrtor;
     use crate::HrtorProcessor;
     use std::sync::{Arc, Mutex};

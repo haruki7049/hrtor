@@ -107,9 +107,9 @@ impl HrtorProcessor {
 
 #[cfg(test)]
 mod test {
-    use hrtor_utils::FileInfo;
     use crate::Hrtor;
     use crate::HrtorProcessor;
+    use hrtor_utils::FileInfo;
     use std::sync::{Arc, Mutex};
 
     #[test]

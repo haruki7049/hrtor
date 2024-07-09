@@ -1,6 +1,6 @@
 use clap::Parser;
-use std::error::Error;
 use hrtor_utils::FileInfo;
+use std::error::Error;
 
 /// CommandLine Argument
 #[derive(Parser)]

@@ -20,4 +20,4 @@ linefeed = "0.6.0"
 rlua = "0.19.7"
 
 [workspace]
-members = ["ed-style", "backend"]
+members = ["ed-style", "backend", "cli"]

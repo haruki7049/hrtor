@@ -6,8 +6,8 @@ use hrtor::{
     CommandResult, CommandStatus, Hrtor, HrtorProcessor,
 };
 
-use linefeed::Interface;
 use linefeed::DefaultTerminal;
+use linefeed::Interface;
 use std::{
     error::Error,
     sync::{Arc, Mutex},

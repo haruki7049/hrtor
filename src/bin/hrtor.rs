@@ -7,6 +7,7 @@ use hrtor::{
 };
 
 use linefeed::Interface;
+use linefeed::DefaultTerminal;
 use std::{
     error::Error,
     sync::{Arc, Mutex},
@@ -33,7 +34,14 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     instance.init();
 
-    // mainloop by linefeed
+    ed_style(reader, instance);
+
+    println!("Bye!!");
+    Ok(())
+}
+
+/// mainloop by linefeed
+fn ed_style(reader: Interface<DefaultTerminal>, instance: Hrtor) {
     while let CommandStatus::Continue(result) = {
         let read = reader.read_line().unwrap();
         instance.processor.handle_command(&instance, read)
@@ -46,8 +54,6 @@ fn main() -> Result<(), Box<dyn Error>> {
             }
         }
     }
-    println!("Bye!!");
-    Ok(())
 }
 
 #[cfg(test)]

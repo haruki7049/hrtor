@@ -1,14 +1,9 @@
-pub fn add(left: usize, right: usize) -> usize {
-    left + right
-}
+use clap::Parser;
 
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn it_works() {
-        let result = add(2, 2);
-        assert_eq!(result, 4);
-    }
+#[derive(Debug, Parser)]
+#[command(author, version, about)]
+struct CommandLineArguments {
+    /// File's path
+    #[arg(help = "The file you want to edit")]
+    path: String,
 }

@@ -2,10 +2,12 @@ use clap::Parser;
 use hrtor::{
     constants::PROMPT,
     file_loader::AppArg,
-    file_loader::{get_config_info, get_file_info, FileInfo},
+    file_loader::{get_config_info, get_file_info},
     CommandResult, CommandStatus, Hrtor, HrtorProcessor,
 };
+use hrtor_utils::FileInfo;
 
+use linefeed::DefaultTerminal;
 use linefeed::Interface;
 use std::{
     error::Error,
@@ -33,7 +35,14 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     instance.init();
 
-    // mainloop by linefeed
+    ed_style(reader, instance);
+
+    println!("Bye!!");
+    Ok(())
+}
+
+/// mainloop by linefeed
+fn ed_style(reader: Interface<DefaultTerminal>, instance: Hrtor) {
     while let CommandStatus::Continue(result) = {
         let read = reader.read_line().unwrap();
         instance.processor.handle_command(&instance, read)
@@ -46,8 +55,6 @@ fn main() -> Result<(), Box<dyn Error>> {
             }
         }
     }
-    println!("Bye!!");
-    Ok(())
 }
 
 #[cfg(test)]

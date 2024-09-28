@@ -21,7 +21,4 @@ rlua = "0.19.7"
 
 [workspace]
 
-members = [
-    "file_loader",
-    "file_loader/file_loader_derive"
-]
+members = ["file_loader", "file_loader/file_loader_derive"]

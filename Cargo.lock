@@ -213,6 +213,13 @@ name = "file_loader"
 version = "0.1.0"
 
 [[package]]
+name = "file_loader_derive"
+version = "0.1.0"
+dependencies = [
+ "file_loader",
+]
+
+[[package]]
 name = "fnv"
 version = "1.0.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"

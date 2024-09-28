@@ -3,7 +3,3 @@ name = "file_loader"
 version = "0.1.0"
 edition = "2021"
 
-[workspace]
-members = [
-    "file_loader_derive"
-]

@@ -23,4 +23,5 @@ rlua = "0.19.7"
 
 members = [
     "file_loader",
+    "file_loader/file_loader_derive"
 ]

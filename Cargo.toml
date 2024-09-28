@@ -18,3 +18,9 @@ categories = ["text-editors"]
 clap = { version = "4.4.7", features = ["derive"] }
 linefeed = "0.6.0"
 rlua = "0.19.7"
+
+[workspace]
+
+members = [
+    "file_loader",
+]

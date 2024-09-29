@@ -22,4 +22,4 @@ file_loader = { path = "file_loader" }
 
 [workspace]
 
-members = ["file_loader", "file_loader/file_loader_derive"]
+members = ["cli", "file_loader", "file_loader/file_loader_derive"]

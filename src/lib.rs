@@ -6,7 +6,6 @@ use user_script::{lua::LuaScript, UserScript};
 
 mod actions;
 pub mod constants;
-pub mod file_loader;
 pub mod user_script;
 
 pub struct Hrtor {
@@ -107,9 +106,9 @@ impl HrtorProcessor {
 
 #[cfg(test)]
 mod test {
-    use crate::file_loader::FileInfo;
     use crate::Hrtor;
     use crate::HrtorProcessor;
+    use file_loader::FileInfo;
     use std::sync::{Arc, Mutex};
 
     #[test]

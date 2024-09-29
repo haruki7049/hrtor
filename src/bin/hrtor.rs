@@ -1,7 +1,8 @@
 use clap::Parser;
+use cli::AppArg;
+use cli::{CLIArgs, CLI};
 use file_loader::{CommandLineArgsParser, FileInfo};
 use hrtor::{constants::PROMPT, CommandResult, CommandStatus, Hrtor, HrtorProcessor};
-use cli::AppArg;
 
 use linefeed::Interface;
 use std::{
@@ -11,9 +12,9 @@ use std::{
 
 /// main function
 fn main() -> Result<(), Box<dyn Error>> {
-    let app: AppArg = AppArg::parse();
+    let args: CLIArgs = AppArg::parse().eval().unwrap();
 
-    let file: FileInfo = app.read_fileinfo().unwrap();
+    let file: FileInfo = args.read_fileinfo().unwrap();
 
     // create interpreter by linefeed
     let reader = Interface::new(PROMPT).unwrap();
@@ -24,7 +25,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     });
 
     // read config file
-    if let Ok(config) = app.read_configinfo() {
+    if let Ok(config) = args.read_configinfo() {
         instance.load_luascript(config);
     }
 
@@ -51,21 +52,24 @@ fn main() -> Result<(), Box<dyn Error>> {
 mod test {
     //! tests for this main.rs
 
-    use super::AppArg;
+    use cli::CLIArgs;
     use file_loader::{CommandLineArgsParser, FileInfo};
 
     #[test]
     fn how_to_use_apparg() {
-        let app: AppArg = AppArg {
-            path: String::from("test.txt"),
+        let args: CLIArgs = CLIArgs {
+            text_file: String::from("test.txt"),
             config: String::from("config.lua"),
         };
 
-        let fileinfo: FileInfo = app.read_fileinfo().unwrap();
+        // Use below syntax
+        // let args: CLIArgs = AppArg::parse().eval().unwrap();
+
+        let fileinfo: FileInfo = args.read_fileinfo().unwrap();
         assert_eq!(fileinfo.path, "test.txt");
         assert_eq!(fileinfo.context, "");
 
-        let configinfo: FileInfo = app.read_configinfo().unwrap();
+        let configinfo: FileInfo = args.read_configinfo().unwrap();
         assert_eq!(configinfo.path, "config.lua");
         assert_eq!(configinfo.context, "");
     }

@@ -1,6 +1,6 @@
+use crate::{CLIArgs, CLI};
 use clap::Parser;
 use std::error::Error;
-use crate::{CLI, CLIArgs};
 
 #[derive(Parser)]
 pub struct AppArg {

@@ -2,7 +2,10 @@ use std::error::Error;
 
 pub trait CommandLineArgsParser {
     /// Read a file and record into FileInfo struct
-    fn read_fileinfo<S: ToString>(&self) -> Result<FileInfo, Box<dyn Error>>;
+    fn read_fileinfo(&self) -> Result<FileInfo, Box<dyn Error>>;
+
+    /// Read a config and record into FileInfo struct
+    fn read_configinfo(&self) -> Result<FileInfo, Box<dyn Error>>;
 }
 
 pub struct FileInfo {

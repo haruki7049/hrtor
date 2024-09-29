@@ -6,7 +6,6 @@ use user_script::{lua::LuaScript, UserScript};
 
 mod actions;
 pub mod constants;
-pub mod file_loader;
 pub mod user_script;
 
 pub struct Hrtor {

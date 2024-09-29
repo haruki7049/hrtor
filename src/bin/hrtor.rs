@@ -1,10 +1,9 @@
 use clap::Parser;
 use hrtor::{
     constants::PROMPT,
-    file_loader::AppArg,
-    file_loader::{get_config_info, get_file_info, FileInfo},
     CommandResult, CommandStatus, Hrtor, HrtorProcessor,
 };
+use file_loader::{ FileInfo, CommandLineArgsParser, };
 
 use linefeed::Interface;
 use std::{
@@ -12,11 +11,44 @@ use std::{
     sync::{Arc, Mutex},
 };
 
+#[derive(Parser)]
+struct AppArg {
+    /// File's Path
+    #[arg(help = "The file you want to edit")]
+    pub path: String,
+
+    //#[arg(long, default_value_t = String::from("./init.lua"))]
+    #[arg(short, long, default_value_t = String::from("./init.lua"), help = "your config file which is as config.lua")]
+    pub config: String,
+}
+
+impl CommandLineArgsParser for AppArg {
+    fn read_fileinfo(&self) -> Result<FileInfo, Box<dyn Error>> {
+        Ok(FileInfo {
+            path: self.path.clone(),
+            context: std::fs::read_to_string(self.path.clone()).unwrap_or_else(|_| {
+                eprintln!("your file cannot find. create a new buffer to continue this process.");
+                String::new()
+            }),
+        })
+    }
+
+    fn read_configinfo(&self) -> Result<FileInfo, Box<dyn Error>> {
+        Ok(FileInfo {
+            path: self.config.clone(),
+            context: std::fs::read_to_string(self.config.clone()).unwrap_or_else(|_| {
+                eprintln!("your config file cannot find. Continue this process without config file.");
+                String::new()
+            }),
+        })
+    }
+}
+
 /// main function
 fn main() -> Result<(), Box<dyn Error>> {
     let app: AppArg = AppArg::parse();
 
-    let file: FileInfo = get_file_info(&app).unwrap();
+    let file: FileInfo = app.read_fileinfo().unwrap();
 
     // create interpreter by linefeed
     let reader = Interface::new(PROMPT).unwrap();
@@ -27,7 +59,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     });
 
     // read config file
-    if let Ok(config) = get_config_info(&app) {
+    if let Ok(config) = app.read_configinfo() {
         instance.load_luascript(config);
     }
 

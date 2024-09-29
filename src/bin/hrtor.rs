@@ -1,5 +1,5 @@
 use clap::Parser;
-use cli::AppArg;
+use cli::by_clap::AppArg;
 use cli::{CLIArgs, CLI};
 use file_loader::{CommandLineArgsParser, FileInfo};
 use hrtor::{constants::PROMPT, CommandResult, CommandStatus, Hrtor, HrtorProcessor};

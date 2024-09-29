@@ -1,4 +1,4 @@
-mod by_clap;
+pub mod by_clap;
 
 use file_loader::{CommandLineArgsParser, FileInfo};
 use std::error::Error;

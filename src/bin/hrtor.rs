@@ -1,9 +1,6 @@
 use clap::Parser;
-use hrtor::{
-    constants::PROMPT,
-    CommandResult, CommandStatus, Hrtor, HrtorProcessor,
-};
-use file_loader::{ FileInfo, CommandLineArgsParser, };
+use file_loader::{CommandLineArgsParser, FileInfo};
+use hrtor::{constants::PROMPT, CommandResult, CommandStatus, Hrtor, HrtorProcessor};
 
 use linefeed::Interface;
 use std::{
@@ -37,7 +34,9 @@ impl CommandLineArgsParser for AppArg {
         Ok(FileInfo {
             path: self.config.clone(),
             context: std::fs::read_to_string(self.config.clone()).unwrap_or_else(|_| {
-                eprintln!("your config file cannot find. Continue this process without config file.");
+                eprintln!(
+                    "your config file cannot find. Continue this process without config file."
+                );
                 String::new()
             }),
         })
@@ -85,4 +84,23 @@ fn main() -> Result<(), Box<dyn Error>> {
 #[cfg(test)]
 mod test {
     //! tests for this main.rs
+
+    use super::AppArg;
+    use file_loader::{CommandLineArgsParser, FileInfo};
+
+    #[test]
+    fn how_to_use_apparg() {
+        let app: AppArg = AppArg {
+            path: String::from("test.txt"),
+            config: String::from("config.lua"),
+        };
+
+        let fileinfo: FileInfo = app.read_fileinfo().unwrap();
+        assert_eq!(fileinfo.path, "test.txt");
+        assert_eq!(fileinfo.context, "");
+
+        let configinfo: FileInfo = app.read_configinfo().unwrap();
+        assert_eq!(configinfo.path, "config.lua");
+        assert_eq!(configinfo.context, "");
+    }
 }

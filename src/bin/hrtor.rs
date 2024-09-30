@@ -22,7 +22,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     let reader = Interface::new(PROMPT).unwrap();
     reader.set_prompt(PROMPT.to_string().as_ref()).unwrap();
 
-    let mut instance = Hrtor::new(HrtorProcessor {
+    let instance = Hrtor::new(HrtorProcessor {
         editing_file: Arc::new(Mutex::new(file)),
     });
 

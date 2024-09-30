@@ -1,10 +1,10 @@
 use std::sync::{Arc, Mutex};
 
 use file_loader::FileInfo;
+use constants::{CommandStatus, CommandResult};
 use linefeed::{ReadResult, Signal};
 use user_script::{lua::LuaScript, UserScript};
 
-mod actions;
 pub mod user_script;
 
 pub struct Hrtor {
@@ -37,16 +37,6 @@ impl Hrtor {
 
 pub struct HrtorProcessor {
     pub editing_file: Arc<Mutex<FileInfo>>,
-}
-
-pub enum CommandStatus {
-    Continue(CommandResult),
-    Quit,
-}
-pub enum CommandResult {
-    Ok,
-    NotFound(String),
-    NothingToDo,
 }
 
 impl HrtorProcessor {

@@ -1,4 +1,4 @@
-use crate::{ HrtorProcessor, command_status_ok };
+use crate::{command_status_ok, HrtorProcessor};
 use constants::CommandStatus;
 use std::io::StdinLock;
 

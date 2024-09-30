@@ -1,5 +1,5 @@
-use std::sync::Arc;
 use processor::HrtorProcessor;
+use std::sync::Arc;
 
 pub struct Hrtor {
     pub processor: Arc<HrtorProcessor>,

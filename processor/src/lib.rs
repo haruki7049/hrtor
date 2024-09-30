@@ -1,8 +1,8 @@
-use std::sync::{Arc, Mutex};
-use std::io::StdinLock;
 use constants::{CommandResult, CommandStatus};
 use file_loader::FileInfo;
-use linefeed::{ ReadResult, Signal };
+use linefeed::{ReadResult, Signal};
+use std::io::StdinLock;
+use std::sync::{Arc, Mutex};
 
 pub struct HrtorProcessor {
     pub editing_file: Arc<Mutex<FileInfo>>,
@@ -155,8 +155,8 @@ impl Processor for HrtorProcessor {
 
 #[cfg(test)]
 mod test {
-    use crate::Hrtor;
     use crate::push_context;
+    use crate::Hrtor;
     use crate::HrtorProcessor;
     use file_loader::FileInfo;
     use std::sync::{Arc, Mutex};

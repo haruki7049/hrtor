@@ -1,4 +1,6 @@
 use clap::Parser;
+use cli::by_clap::AppArg;
+use cli::{CLIArgs, CLI};
 use file_loader::{CommandLineArgsParser, FileInfo};
 use hrtor::{constants::PROMPT, CommandResult, CommandStatus, Hrtor, HrtorProcessor};
 
@@ -8,46 +10,11 @@ use std::{
     sync::{Arc, Mutex},
 };
 
-#[derive(Parser)]
-struct AppArg {
-    /// File's Path
-    #[arg(help = "The file you want to edit")]
-    pub path: String,
-
-    //#[arg(long, default_value_t = String::from("./init.lua"))]
-    #[arg(short, long, default_value_t = String::from("./init.lua"), help = "your config file which is as config.lua")]
-    pub config: String,
-}
-
-impl CommandLineArgsParser for AppArg {
-    fn read_fileinfo(&self) -> Result<FileInfo, Box<dyn Error>> {
-        Ok(FileInfo {
-            path: self.path.clone(),
-            context: std::fs::read_to_string(self.path.clone()).unwrap_or_else(|_| {
-                eprintln!("your file cannot find. create a new buffer to continue this process.");
-                String::new()
-            }),
-        })
-    }
-
-    fn read_configinfo(&self) -> Result<FileInfo, Box<dyn Error>> {
-        Ok(FileInfo {
-            path: self.config.clone(),
-            context: std::fs::read_to_string(self.config.clone()).unwrap_or_else(|_| {
-                eprintln!(
-                    "your config file cannot find. Continue this process without config file."
-                );
-                String::new()
-            }),
-        })
-    }
-}
-
 /// main function
 fn main() -> Result<(), Box<dyn Error>> {
-    let app: AppArg = AppArg::parse();
+    let args: CLIArgs = AppArg::parse().eval().unwrap();
 
-    let file: FileInfo = app.read_fileinfo().unwrap();
+    let file: FileInfo = args.read_fileinfo().unwrap();
 
     // create interpreter by linefeed
     let reader = Interface::new(PROMPT).unwrap();
@@ -58,7 +25,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     });
 
     // read config file
-    if let Ok(config) = app.read_configinfo() {
+    if let Ok(config) = args.read_configinfo() {
         instance.load_luascript(config);
     }
 
@@ -85,21 +52,24 @@ fn main() -> Result<(), Box<dyn Error>> {
 mod test {
     //! tests for this main.rs
 
-    use super::AppArg;
+    use cli::CLIArgs;
     use file_loader::{CommandLineArgsParser, FileInfo};
 
     #[test]
     fn how_to_use_apparg() {
-        let app: AppArg = AppArg {
-            path: String::from("test.txt"),
+        let args: CLIArgs = CLIArgs {
+            text_file: String::from("test.txt"),
             config: String::from("config.lua"),
         };
 
-        let fileinfo: FileInfo = app.read_fileinfo().unwrap();
+        // Use below syntax
+        // let args: CLIArgs = AppArg::parse().eval().unwrap();
+
+        let fileinfo: FileInfo = args.read_fileinfo().unwrap();
         assert_eq!(fileinfo.path, "test.txt");
         assert_eq!(fileinfo.context, "");
 
-        let configinfo: FileInfo = app.read_configinfo().unwrap();
+        let configinfo: FileInfo = args.read_configinfo().unwrap();
         assert_eq!(configinfo.path, "config.lua");
         assert_eq!(configinfo.context, "");
     }

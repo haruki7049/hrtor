@@ -19,7 +19,8 @@ clap = { version = "4.4.7", features = ["derive"] }
 linefeed = "0.6.0"
 rlua = "0.19.7"
 file_loader = { path = "file_loader" }
+cli = { path = "cli" }
 
 [workspace]
 
-members = ["file_loader", "file_loader/file_loader_derive"]
+members = ["cli", "file_loader", "file_loader/file_loader_derive"]

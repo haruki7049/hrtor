@@ -274,6 +274,7 @@ dependencies = [
  "constants",
  "file_loader",
  "linefeed",
+ "processor",
  "rlua",
 ]
 

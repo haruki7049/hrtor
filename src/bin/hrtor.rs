@@ -1,9 +1,10 @@
 use clap::Parser;
 use cli::by_clap::AppArg;
-use cli::{CLIArgs, CLI};
+use cli::{ CLIArgs, CLI };
 use constants::PROMPT;
-use file_loader::{CommandLineArgsParser, FileInfo};
-use hrtor::{CommandResult, CommandStatus, Hrtor, HrtorProcessor};
+use constants::{ CommandStatus, CommandResult };
+use file_loader::{ FileInfo, CommandLineArgsParser };
+use processor::{HrtorProcessor, Hrtor, Processor};
 
 use linefeed::Interface;
 use std::{
@@ -25,17 +26,10 @@ fn main() -> Result<(), Box<dyn Error>> {
         editing_file: Arc::new(Mutex::new(file)),
     });
 
-    // read config file
-    if let Ok(config) = args.read_configinfo() {
-        instance.load_luascript(config);
-    }
-
-    instance.init();
-
     // mainloop by linefeed
     while let CommandStatus::Continue(result) = {
         let read = reader.read_line().unwrap();
-        instance.processor.handle_command(&instance, read)
+        instance.processor.handle_command(read)
     } {
         match result {
             CommandResult::Ok => {}

@@ -2,13 +2,13 @@ use std::sync::{Arc, Mutex};
 use std::io::StdinLock;
 use constants::{CommandResult, CommandStatus};
 use file_loader::FileInfo;
-use linefeed::ReadResult;
+use linefeed::{ ReadResult, Signal };
 
 pub struct HrtorProcessor {
     pub editing_file: Arc<Mutex<FileInfo>>,
 }
 
-pub(crate) fn command_status_ok() -> CommandStatus {
+pub fn command_status_ok() -> CommandStatus {
     CommandStatus::Continue(CommandResult::Ok)
 }
 
@@ -20,17 +20,17 @@ pub trait Processor {
 }
 
 impl HrtorProcessor {
-    pub(crate) fn quit(&self) -> CommandStatus {
+    pub fn quit(&self) -> CommandStatus {
         CommandStatus::Quit
     }
-    pub(crate) fn delete_all(&self) -> CommandStatus {
+    pub fn delete_all(&self) -> CommandStatus {
         {
             let mut editing_file = self.editing_file.lock().unwrap();
             editing_file.context.clear();
         }
         command_status_ok()
     }
-    pub(crate) fn print(&self) -> CommandStatus {
+    pub fn print(&self) -> CommandStatus {
         let context = { &self.editing_file.lock().unwrap().context };
         println!("{}", context);
         command_status_ok()
@@ -38,7 +38,7 @@ impl HrtorProcessor {
 }
 
 impl HrtorProcessor {
-    pub(crate) fn add(&self) -> CommandStatus {
+    pub fn add(&self) -> CommandStatus {
         let reader: StdinLock = std::io::stdin().lock();
         let _writer: std::io::Stdout = std::io::stdout();
 
@@ -51,7 +51,7 @@ impl HrtorProcessor {
 }
 
 impl HrtorProcessor {
-    pub(crate) fn write(&self) -> CommandStatus {
+    pub fn write(&self) -> CommandStatus {
         {
             let editing_file = self.editing_file.lock().unwrap();
             save_file(&editing_file.path, &editing_file.context);
@@ -97,9 +97,80 @@ where
     inputed_text
 }
 
+pub struct Hrtor {
+    pub processor: Arc<HrtorProcessor>,
+}
+
+impl Hrtor {
+    pub fn new(processor: HrtorProcessor) -> Self {
+        Self {
+            processor: processor.into(),
+        }
+    }
+}
+
+impl Processor for HrtorProcessor {
+    fn interpret_command_status(&self, status: CommandStatus) {
+        match status {
+            CommandStatus::Continue(CommandResult::Ok) => (),
+            CommandStatus::Continue(CommandResult::NothingToDo) => (),
+            CommandStatus::Continue(CommandResult::NotFound(name)) => {
+                panic!("unknown command: {:?}", name);
+            }
+            CommandStatus::Quit => {
+                // Exit status zero
+                println!("Bye!!");
+                std::process::exit(0);
+            }
+        }
+    }
+
+    fn handle_command(&self, command: ReadResult) -> CommandStatus {
+        match command {
+            ReadResult::Input(str) => {
+                if str == "exit" {
+                    return self.quit();
+                }
+                if str == "write" {
+                    return self.write();
+                }
+                if str == "add" {
+                    return self.add();
+                }
+                if str == "delete_all" {
+                    return self.delete_all();
+                }
+                if str == "print" {
+                    return self.print();
+                }
+                CommandStatus::Continue(CommandResult::NotFound(str))
+            }
+            ReadResult::Eof
+            | ReadResult::Signal(Signal::Interrupt)
+            | ReadResult::Signal(Signal::Quit) => CommandStatus::Quit,
+            _ => CommandStatus::Continue(CommandResult::NothingToDo),
+        }
+    }
+}
+
 #[cfg(test)]
-mod tests {
-    use super::*;
+mod test {
+    use crate::Hrtor;
+    use crate::push_context;
+    use crate::HrtorProcessor;
+    use file_loader::FileInfo;
+    use std::sync::{Arc, Mutex};
+
+    #[test]
+    fn test_handle_command() {
+        let hrtor_processor: HrtorProcessor = HrtorProcessor {
+            editing_file: Arc::new(Mutex::new(FileInfo {
+                path: "test".to_string(),
+                context: "test".to_string(),
+            })),
+        };
+        let _hrtor = Hrtor::new(hrtor_processor);
+    }
 
     #[test]
     fn test_push_context() {

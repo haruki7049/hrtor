@@ -274,6 +274,7 @@ dependencies = [
  "constants",
  "file_loader",
  "linefeed",
+ "processor",
  "rlua",
 ]
 
@@ -414,6 +415,15 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "e2422ad645d89c99f8f3e6b88a9fdeca7fabeac836b1002371c4367c8f984aae"
 dependencies = [
  "unicode-ident",
+]
+
+[[package]]
+name = "processor"
+version = "0.1.0"
+dependencies = [
+ "constants",
+ "file_loader",
+ "linefeed",
 ]
 
 [[package]]

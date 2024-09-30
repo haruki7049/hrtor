@@ -24,4 +24,10 @@ constants = { path = "constants" }
 
 [workspace]
 
-members = ["action", "cli", "constants", "file_loader", "file_loader/file_loader_derive"]
+members = [
+  "action",
+  "cli",
+  "constants",
+  "file_loader",
+  "file_loader/file_loader_derive",
+]

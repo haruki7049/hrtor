@@ -20,7 +20,8 @@ linefeed = "0.6.0"
 rlua = "0.19.7"
 file_loader = { path = "file_loader" }
 cli = { path = "cli" }
+constants = { path = "constants" }
 
 [workspace]
 
-members = ["cli", "file_loader", "file_loader/file_loader_derive"]
+members = ["cli", "constants", "file_loader", "file_loader/file_loader_derive"]

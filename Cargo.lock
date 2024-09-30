@@ -180,6 +180,10 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "245097e9a4535ee1e3e3931fcfcd55a796a44c643e8596ff6566d68f09b87bbc"
 
 [[package]]
+name = "constants"
+version = "0.1.0"
+
+[[package]]
 name = "crossbeam-utils"
 version = "0.8.19"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -267,6 +271,7 @@ version = "0.1.0"
 dependencies = [
  "clap",
  "cli",
+ "constants",
  "file_loader",
  "linefeed",
  "rlua",

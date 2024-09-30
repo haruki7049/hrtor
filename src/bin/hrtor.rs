@@ -1,8 +1,9 @@
 use clap::Parser;
 use cli::by_clap::AppArg;
 use cli::{CLIArgs, CLI};
+use constants::PROMPT;
 use file_loader::{CommandLineArgsParser, FileInfo};
-use hrtor::{constants::PROMPT, CommandResult, CommandStatus, Hrtor, HrtorProcessor};
+use hrtor::{CommandResult, CommandStatus, Hrtor, HrtorProcessor};
 
 use linefeed::Interface;
 use std::{

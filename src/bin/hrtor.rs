@@ -54,7 +54,6 @@ mod test {
     fn how_to_use_apparg() {
         let args: CLIArgs = CLIArgs {
             text_file: String::from("test.txt"),
-            config: String::from("config.lua"),
         };
 
         // Use below syntax
@@ -63,9 +62,5 @@ mod test {
         let fileinfo: FileInfo = args.read_fileinfo().unwrap();
         assert_eq!(fileinfo.path, "test.txt");
         assert_eq!(fileinfo.context, "");
-
-        let configinfo: FileInfo = args.read_configinfo().unwrap();
-        assert_eq!(configinfo.path, "config.lua");
-        assert_eq!(configinfo.context, "");
     }
 }

@@ -19,7 +19,13 @@
         inputs.treefmt-nix.flakeModule
       ];
 
-      perSystem = { pkgs, lib, system, ... }:
+      perSystem =
+        {
+          pkgs,
+          lib,
+          system,
+          ...
+        }:
         let
           rust = pkgs.rust-bin.fromRustupToolchainFile ./rust-toolchain.toml;
           craneLib = (inputs.crane.mkLib pkgs).overrideToolchain rust;
@@ -61,7 +67,7 @@
 
           treefmt = {
             projectRootFile = "flake.nix";
-            programs.nixpkgs-fmt.enable = true;
+            programs.nixfmt.enable = true;
             programs.rustfmt.enable = true;
             programs.taplo.enable = true;
             programs.actionlint.enable = true;

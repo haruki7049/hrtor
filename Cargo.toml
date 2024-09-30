@@ -23,4 +23,4 @@ cli = { path = "cli" }
 
 [workspace]
 
-members = ["cli", "file_loader", "file_loader/file_loader_derive"]
+members = ["action", "cli", "file_loader", "file_loader/file_loader_derive"]

@@ -29,6 +29,7 @@ members = [
   "actions",
   "cli",
   "constants",
+  "core",
   "file_loader",
   "file_loader/file_loader_derive",
 ]

@@ -21,15 +21,13 @@ rlua = "0.19.7"
 file_loader = { path = "file_loader" }
 cli = { path = "cli" }
 constants = { path = "constants" }
-actions = { path = "actions" }
 
 [workspace]
 
 members = [
-  "actions",
   "cli",
   "constants",
-  "core",
   "file_loader",
   "file_loader/file_loader_derive",
+  "processor",
 ]

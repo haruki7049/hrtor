@@ -1,7 +1,7 @@
 use std::sync::{Arc, Mutex};
 
+use constants::{CommandResult, CommandStatus};
 use file_loader::FileInfo;
-use constants::{CommandStatus, CommandResult};
 use linefeed::{ReadResult, Signal};
 use user_script::{lua::LuaScript, UserScript};
 

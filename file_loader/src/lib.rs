@@ -5,6 +5,7 @@ pub trait CommandLineArgsParser {
     fn read_fileinfo(&self) -> Result<FileInfo, Box<dyn Error>>;
 }
 
+#[derive(Debug, PartialEq, Eq)]
 pub struct FileInfo {
     pub path: String,
     pub context: String,

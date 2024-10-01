@@ -3,10 +3,6 @@ hrtor("hərtər", "ハルター", "ハーター", "ヘルター", "ヘルトル"
 
 # Usage
 ```bash
-cargo run -- sample.txt --config ./test_config.lua
-```
-
-```bash
 cargo run -- sample.txt
 ```
 

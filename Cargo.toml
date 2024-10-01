@@ -1,7 +1,7 @@
 [package]
 name = "hrtor"
 authors = ["haruki7049 <tontonkirikiri@gmail.com>"]
-version = "0.1.0"
+version = "0.2.0-dev"
 description = "A scalable line editor"
 edition = "2021"
 license = "MIT"

@@ -1,4 +1,4 @@
-name: nix-checker
+name: main-branch-builder
 on:
   push:
     branches:

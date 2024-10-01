@@ -26,7 +26,7 @@ impl CommandLineArgsParser for CLIArgs {
 #[cfg(test)]
 mod tests {
     use crate::CLIArgs;
-    use file_loader::{ FileInfo, CommandLineArgsParser };
+    use file_loader::{CommandLineArgsParser, FileInfo};
 
     #[test]
     fn how_to_read_fileinfo() {

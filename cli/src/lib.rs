@@ -22,3 +22,20 @@ impl CommandLineArgsParser for CLIArgs {
         })
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use crate::CLIArgs;
+    use file_loader::{ FileInfo, CommandLineArgsParser };
+
+    #[test]
+    fn how_to_read_fileinfo() {
+        let args: CLIArgs = CLIArgs {
+            text_file: String::from("test.txt"),
+        };
+
+        let fileinfo: FileInfo = args.read_fileinfo().unwrap();
+
+        assert_eq!(String::new(), fileinfo.context);
+    }
+}

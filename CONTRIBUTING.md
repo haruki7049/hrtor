@@ -11,7 +11,7 @@ If you have questions, please post them in [GitHub Discussion for hrtor](https:/
 
 ## Creating a PullRequest
 
-- Always create a PullRequest after you have created an Issue. Otherwise, the purpose of the PullRequest will be lost. For related information, please read [code modification section](#Code modification).
+- Always create a PullRequest after you have created an Issue. Otherwise, the purpose of the PullRequest will be lost. For related information, please read [Fixing the code section](#Fixing-the-code).
 
 ## Creating Milestones
 
@@ -34,8 +34,8 @@ Wanna create a new milestone for hrtor:v0.1.1?
 Follow the flow below:
 
 1. Create an Issue.
-2. Create a PullRequest for the Issue. See [GitHub Docs](https://docs.github.com/en/issues/tracking-your-work-with-issues/linking-a-pull-request-to-an-issue) for how to do this.
-3. Have the PullRequest reviewed and merge it.
+1. Create a PullRequest for the Issue. See [GitHub Docs](https://docs.github.com/en/issues/tracking-your-work-with-issues/linking-a-pull-request-to-an-issue) for how to do this.
+1. Have the PullRequest reviewed and merge it.
 
 ## Adding CI/CD
 

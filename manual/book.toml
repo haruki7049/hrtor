@@ -1,0 +1,6 @@
+[book]
+authors = ["haruki7049"]
+language = "en"
+multilingual = false
+src = "src"
+title = "Manual for Hrtor HEAD"

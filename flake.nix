@@ -89,13 +89,16 @@
               ;
           };
 
-          devShells.default = pkgs.mkShell rec {
+          devShells.default = pkgs.mkShell {
             packages = [
               # Rust
               rust
 
               # Nix
               pkgs.nil
+
+              # mdBook
+              pkgs.mdbook
             ];
 
             shellHook = ''

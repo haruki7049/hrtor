@@ -6,13 +6,13 @@ Default Hrtor has five commands.
 
 Adds your text. This command uses stdin. Use dot keyword to exit add command.
 
-````
+```
 hrtor:> add
 foofoo
 bar
 .
 hrtor:>
-````
+```
 
 ## `delete_all`
 

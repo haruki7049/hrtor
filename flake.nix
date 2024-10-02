@@ -89,6 +89,15 @@
             programs.rustfmt.enable = true;
             programs.taplo.enable = true;
             programs.actionlint.enable = true;
+            programs.mdformat.enable = true;
+
+            settings.formatter = {
+              mdformat.excludes = [
+                "CONTRIBUTING.md"
+                "CODE_OF_CONDUCT.md"
+                "SUPPORT.md"
+              ];
+            };
           };
 
           packages = {

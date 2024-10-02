@@ -11,7 +11,7 @@ If you have questions, please post them in [GitHub Discussion for hrtor](https:/
 
 ## Creating a PullRequest
 
-- Always create a PullRequest after you have created an Issue. Otherwise, the purpose of the PullRequest will be lost. For related information, please read [code modification section](#Fixing-the-code).
+- Always create a PullRequest after you have created an Issue. Otherwise, the purpose of the PullRequest will be lost. For related information, please read [Fixing the code section](#Fixing-the-code).
 
 ## Creating Milestones
 

@@ -24,9 +24,8 @@ jobs:
       - name: Run nix-build .#manual
         run: nix build .#manual
       - name: Upload manual
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-pages-artifact@v3
         with:
-          name: github-pages
           path: result/share/book
 
   deploy:

@@ -59,6 +59,24 @@
             cargoLlvmCovCommand = "test";
             cargoLlvmCovExtraArgs = "--html --output-dir $out";
           };
+          manual = pkgs.stdenv.mkDerivation {
+            pname = "hrtor-manual";
+            version = "dev";
+            src = lib.cleanSource ./manual;
+
+            nativeBuildInputs = [
+              pkgs.mdbook
+            ];
+
+            buildPhase = ''
+              mdbook build
+            '';
+
+            installPhase = ''
+              mkdir -p $out/share
+              cp -r book $out/share
+            '';
+          };
         in
         {
           _module.args.pkgs = import inputs.nixpkgs {
@@ -74,7 +92,12 @@
           };
 
           packages = {
-            inherit hrtor llvm-cov llvm-cov-text;
+            inherit
+              hrtor
+              llvm-cov
+              llvm-cov-text
+              manual
+              ;
             default = hrtor;
             doc = cargo-doc;
           };
@@ -86,6 +109,7 @@
               cargo-doc
               llvm-cov
               llvm-cov-text
+              manual
               ;
           };
 

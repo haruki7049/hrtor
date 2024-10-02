@@ -3,4 +3,5 @@
 - `/cli`
 - `/constants`
 - `/file_loader`
+- `/manual`
 - `/processor`

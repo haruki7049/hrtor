@@ -45,18 +45,6 @@
           cargo-doc = craneLib.cargoDoc {
             inherit src cargoArtifacts;
           };
-          llvm-cov-text = craneLib.cargoLlvmCov {
-            inherit cargoArtifacts src;
-            cargoExtraArgs = "--locked";
-            cargoLlvmCovCommand = "test";
-            cargoLlvmCovExtraArgs = "--text --output-dir $out";
-          };
-          llvm-cov = craneLib.cargoLlvmCov {
-            inherit cargoArtifacts src;
-            cargoExtraArgs = "--locked";
-            cargoLlvmCovCommand = "test";
-            cargoLlvmCovExtraArgs = "--html --output-dir $out";
-          };
           manual = pkgs.stdenv.mkDerivation {
             pname = "hrtor-manual";
             version = "dev";
@@ -100,8 +88,6 @@
           packages = {
             inherit
               hrtor
-              llvm-cov
-              llvm-cov-text
               manual
               ;
             default = hrtor;
@@ -113,8 +99,6 @@
               hrtor
               cargo-clippy
               cargo-doc
-              llvm-cov
-              llvm-cov-text
               manual
               ;
           };

@@ -2,10 +2,19 @@
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs";
     systems.url = "github:nix-systems/default";
-    flake-parts.url = "github:hercules-ci/flake-parts";
-    treefmt-nix.url = "github:numtide/treefmt-nix";
-    rust-overlay.url = "github:oxalica/rust-overlay";
     crane.url = "github:ipetkov/crane";
+    flake-parts = {
+      url = "github:hercules-ci/flake-parts";
+      inputs.nixpkgs-lib.follows = "nixpkgs";
+    };
+    treefmt-nix = {
+      url = "github:numtide/treefmt-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    rust-overlay = {
+      url = "github:oxalica/rust-overlay";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =

@@ -1,6 +1,7 @@
 {
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs";
+    systems.url = "github:nix-systems/default";
     flake-parts.url = "github:hercules-ci/flake-parts";
     treefmt-nix.url = "github:numtide/treefmt-nix";
     rust-overlay.url = "github:oxalica/rust-overlay";
@@ -10,10 +11,7 @@
   outputs =
     inputs:
     inputs.flake-parts.lib.mkFlake { inherit inputs; } {
-      systems = [
-        "x86_64-linux"
-        "aarch64-linux"
-      ];
+      systems = import inputs.systems;
 
       imports = [
         inputs.treefmt-nix.flakeModule
@@ -46,18 +44,6 @@
           };
           cargo-doc = craneLib.cargoDoc {
             inherit src cargoArtifacts;
-          };
-          llvm-cov-text = craneLib.cargoLlvmCov {
-            inherit cargoArtifacts src;
-            cargoExtraArgs = "--locked";
-            cargoLlvmCovCommand = "test";
-            cargoLlvmCovExtraArgs = "--text --output-dir $out";
-          };
-          llvm-cov = craneLib.cargoLlvmCov {
-            inherit cargoArtifacts src;
-            cargoExtraArgs = "--locked";
-            cargoLlvmCovCommand = "test";
-            cargoLlvmCovExtraArgs = "--html --output-dir $out";
           };
           manual = pkgs.stdenv.mkDerivation {
             pname = "hrtor-manual";
@@ -102,8 +88,6 @@
           packages = {
             inherit
               hrtor
-              llvm-cov
-              llvm-cov-text
               manual
               ;
             default = hrtor;
@@ -115,8 +99,6 @@
               hrtor
               cargo-clippy
               cargo-doc
-              llvm-cov
-              llvm-cov-text
               manual
               ;
           };

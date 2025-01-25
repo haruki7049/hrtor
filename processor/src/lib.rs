@@ -1,3 +1,36 @@
+//! # Hrtor processor crate
+//!
+//! This crate has some structs
+//! - Hrtor
+//! - HrtorProcessor
+//!
+//! And some traits
+//! - Processor
+//!
+//! ---
+//! Structures
+//!
+//! ## Hrtor
+//! ### Variables
+//! - processor: `Arc<HrtorProcessor>`
+//!
+//! ### Interface
+//! - new: `Fn(processor: HrtorProcessor) -> Self`
+//!
+//! ## HrtorProcessor
+//! ### variables
+//! - editing_file: `Arc<Mutex<FileInfo>>`
+//!
+//! ### Interface
+//! - handle_command: `Fn(&self, command: ReadResult) -> CommandStatus`
+//! - interpret_command_status: `Fn(&self, status: CommandStatus)`
+//!
+//! ---
+//! Traits
+//!
+//! ## Processor
+//! - interpret_command_status: `Fn(&self, status: CommandStatus)`
+
 pub mod actions;
 
 use constants::{CommandResult, CommandStatus};

@@ -1,0 +1,3 @@
+expr = { SOI ~ command ~ EOI }
+
+command = { "add" | "delete_all" | "exit" | "print" | "write" }

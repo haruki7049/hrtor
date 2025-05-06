@@ -34,8 +34,10 @@
 
 pub mod actions;
 pub mod constants;
+pub mod parser;
 
 use crate::cli::FileInfo;
+use crate::processor::parser::{Expression, Command};
 use constants::{CommandResult, CommandStatus};
 use linefeed::{ReadResult, Signal};
 use std::sync::{Arc, Mutex};
@@ -102,19 +104,21 @@ impl Processor for HrtorProcessor {
     fn handle_command(&self, command: ReadResult) -> CommandStatus {
         match command {
             ReadResult::Input(str) => {
-                if str == "exit" {
-                    return self.quit();
+                let expr: Expression = parser::parse(str.as_str()).unwrap();
+
+                if expr.cmd == Command::Exit {
+                    return self.exit();
                 }
-                if str == "write" {
+                if expr.cmd == Command::Write {
                     return self.write();
                 }
-                if str == "add" {
+                if expr.cmd == Command::Add {
                     return self.add();
                 }
-                if str == "delete_all" {
+                if expr.cmd == Command::DeleteAll {
                     return self.delete_all();
                 }
-                if str == "print" {
+                if expr.cmd == Command::Print {
                     return self.print();
                 }
                 CommandStatus::Continue(CommandResult::NotFound(str))

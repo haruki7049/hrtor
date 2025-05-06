@@ -3,7 +3,7 @@ use crate::processor::{command_status_ok, HrtorProcessor};
 use std::io::StdinLock;
 
 impl HrtorProcessor {
-    pub fn quit(&self) -> CommandStatus {
+    pub fn exit(&self) -> CommandStatus {
         CommandStatus::Quit
     }
     pub fn delete_all(&self) -> CommandStatus {

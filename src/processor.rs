@@ -1,4 +1,4 @@
-//! # Hrtor processor crate
+//! # Hrtor processor module
 //!
 //! This crate has some structs
 //! - Hrtor
@@ -32,9 +32,10 @@
 //! - interpret_command_status: `Fn(&self, status: CommandStatus)`
 
 pub mod actions;
+pub mod constants;
 
 use constants::{CommandResult, CommandStatus};
-use file_loader::FileInfo;
+use crate::cli::FileInfo;
 use linefeed::{ReadResult, Signal};
 use std::sync::{Arc, Mutex};
 
@@ -111,9 +112,9 @@ impl Processor for HrtorProcessor {
 
 #[cfg(test)]
 mod test {
-    use crate::Hrtor;
-    use crate::HrtorProcessor;
-    use file_loader::FileInfo;
+    use crate::processor::Hrtor;
+    use crate::processor::HrtorProcessor;
+    use crate::cli::FileInfo;
     use std::sync::{Arc, Mutex};
 
     #[test]

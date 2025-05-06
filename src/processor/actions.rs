@@ -1,5 +1,5 @@
-use crate::{command_status_ok, HrtorProcessor};
-use constants::CommandStatus;
+use crate::processor::{command_status_ok, HrtorProcessor};
+use super::constants::CommandStatus;
 use std::io::StdinLock;
 
 impl HrtorProcessor {
@@ -82,7 +82,7 @@ where
 
 #[cfg(test)]
 mod test {
-    use crate::actions::push_context;
+    use super::push_context;
 
     #[test]
     fn test_push_context() {

@@ -11,23 +11,10 @@ repository = "https://github.com/haruki7049/hrtor"
 keywords = ["editor", "text-editor"]
 categories = ["text-editors"]
 
-
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+anyhow = { version = "1.0.98", features = ["backtrace"] }
 clap = { version = "4.4.7", features = ["derive"] }
+color-eyre = "0.6.4"
 linefeed = "0.6.0"
-file_loader = { path = "file_loader", version = "0.1.0" }
-cli = { path = "cli", version = "0.1.0" }
-constants = { path = "constants", version = "0.1.0" }
-processor = { path = "processor", version = "0.1.0" }
-
-[workspace]
-
-members = [
-  "cli",
-  "constants",
-  "file_loader",
-  "file_loader/file_loader_derive",
-  "processor",
-]

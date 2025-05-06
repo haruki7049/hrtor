@@ -1,9 +1,0 @@
-[book]
-authors = ["haruki7049"]
-language = "en"
-multilingual = false
-src = "src"
-title = "Manual for Hrtor HEAD"
-
-[output.html]
-git-repository-url = "https://github.com/haruki7049/hrtor"

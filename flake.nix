@@ -63,16 +63,29 @@
 
           treefmt = {
             projectRootFile = "flake.nix";
+
+            # Nix
             programs.nixfmt.enable = true;
+
+            # Rust
             programs.rustfmt.enable = true;
+
+            # TOML
             programs.taplo.enable = true;
+
+            # GitHub Actions
             programs.actionlint.enable = true;
+
+            # Markdown
             programs.mdformat.enable = true;
+
+            # ShellScript
+            programs.shellcheck.enable = true;
+            programs.shfmt.enable = true;
 
             settings.formatter = {
               mdformat.excludes = [
                 "CODE_OF_CONDUCT.md"
-                "SUPPORT.md"
               ];
             };
           };

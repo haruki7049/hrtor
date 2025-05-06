@@ -7,29 +7,30 @@
 //! And some traits
 //! - Processor
 //!
-//! ---
-//! Structures
+//! ## Structs
 //!
-//! ## Hrtor
-//! ### Variables
+//! ### Hrtor
+//! #### Variables
 //! - processor: `Arc<HrtorProcessor>`
 //!
-//! ### Interface
+//! #### Interface
 //! - new: `Fn(processor: HrtorProcessor) -> Self`
+//! - from: `Fn(file: FileInfo) -> Self`
 //!
-//! ## HrtorProcessor
-//! ### variables
+//! ### HrtorProcessor
+//! #### variables
 //! - editing_file: `Arc<Mutex<FileInfo>>`
 //!
-//! ### Interface
+//! #### Interface
 //! - handle_command: `Fn(&self, command: ReadResult) -> CommandStatus`
 //! - interpret_command_status: `Fn(&self, status: CommandStatus)`
+//! - from: `Fn(file: FileInfo) -> Self`
 //!
-//! ---
-//! Traits
+//! ## Traits
 //!
-//! ## Processor
+//! ### Processor
 //! - interpret_command_status: `Fn(&self, status: CommandStatus)`
+//! - handle_command: `Fn(&self, command: ReadResult) -> CommandStatus`
 
 pub mod actions;
 pub mod constants;

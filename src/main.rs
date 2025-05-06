@@ -1,26 +1,26 @@
 use clap::Parser;
 use hrtor::cli::{CLIArgs, FileInfo};
 use hrtor::processor::constants::{CommandResult, CommandStatus};
-use hrtor::processor::{Hrtor, HrtorProcessor, Processor};
+use hrtor::processor::{Hrtor, Processor};
 use linefeed::Interface;
-use std::sync::{Arc, Mutex};
 
 /// PROMPT message in interpreter
 pub const PROMPT: &str = "hrtor:> ";
 
 /// main function
 fn main() -> anyhow::Result<()> {
+    // Gets CLIArgs by Hrtor's Command-Line Interface
     let args: CLIArgs = CLIArgs::parse();
 
+    // Gets FileInfo from CLIArgs
     let file: FileInfo = args.read_fileinfo();
 
     // create interpreter by linefeed
     let reader = Interface::new(PROMPT)?;
     reader.set_prompt(PROMPT.to_string().as_ref())?;
 
-    let instance = Hrtor::new(HrtorProcessor {
-        editing_file: Arc::new(Mutex::new(file)),
-    });
+    // Create Hrtor instance
+    let instance = Hrtor::from(file);
 
     // mainloop by linefeed
     while let CommandStatus::Continue(result) = {

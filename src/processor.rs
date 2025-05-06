@@ -43,6 +43,14 @@ pub struct HrtorProcessor {
     pub editing_file: Arc<Mutex<FileInfo>>,
 }
 
+impl HrtorProcessor {
+    fn from(file: FileInfo) -> Self {
+        Self {
+            editing_file: Arc::new(Mutex::new(file)),
+        }
+    }
+}
+
 pub fn command_status_ok() -> CommandStatus {
     CommandStatus::Continue(CommandResult::Ok)
 }
@@ -59,9 +67,17 @@ pub struct Hrtor {
 }
 
 impl Hrtor {
+    /// Creates Hrtor instance by HrtorProcessor
     pub fn new(processor: HrtorProcessor) -> Self {
         Self {
             processor: processor.into(),
+        }
+    }
+
+    /// Creates Hrtor instance from the file user want to edit
+    pub fn from(file: FileInfo) -> Self {
+        Self {
+            processor: Arc::new(HrtorProcessor::from(file)),
         }
     }
 }

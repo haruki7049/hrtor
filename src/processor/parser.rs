@@ -1,5 +1,5 @@
-use pest::iterators::Pair;
 use pest::Parser;
+use pest::iterators::Pair;
 use pest_derive::Parser;
 
 #[derive(Parser)]
@@ -34,18 +34,18 @@ fn parse_pair(pair: Pair<Rule>) -> anyhow::Result<Expression> {
                 "delete_all" => {
                     return Ok(Expression {
                         cmd: Command::DeleteAll,
-                    })
+                    });
                 }
                 "exit" => return Ok(Expression { cmd: Command::Exit }),
                 "print" => {
                     return Ok(Expression {
                         cmd: Command::Print,
-                    })
+                    });
                 }
                 "write" => {
                     return Ok(Expression {
                         cmd: Command::Write,
-                    })
+                    });
                 }
                 _ => unreachable!(),
             }

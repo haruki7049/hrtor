@@ -1,5 +1,5 @@
 use super::constants::CommandStatus;
-use crate::processor::{command_status_ok, HrtorProcessor};
+use crate::processor::{HrtorProcessor, command_status_ok};
 use std::io::StdinLock;
 
 impl HrtorProcessor {

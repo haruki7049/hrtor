@@ -37,7 +37,7 @@ pub mod constants;
 pub mod parser;
 
 use crate::cli::FileInfo;
-use crate::processor::parser::{Expression, Command};
+use crate::processor::parser::{Command, Expression};
 use constants::{CommandResult, CommandStatus};
 use linefeed::{ReadResult, Signal};
 use std::sync::{Arc, Mutex};

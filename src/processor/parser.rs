@@ -1,6 +1,6 @@
-use pest_derive::Parser;
-use pest::Parser;
 use pest::iterators::Pair;
+use pest::Parser;
+use pest_derive::Parser;
 
 #[derive(Parser)]
 #[grammar = "processor/expr.pest"]
@@ -30,21 +30,23 @@ fn parse_pair(pair: Pair<Rule>) -> anyhow::Result<Expression> {
             // Now command has a str as "write"
 
             match command.as_span().as_str() {
-                "add" => return Ok(Expression {
-                    cmd: Command::Add,
-                }),
-                "delete_all" => return Ok(Expression {
-                    cmd: Command::DeleteAll,
-                }),
-                "exit" => return Ok(Expression {
-                    cmd: Command::Exit,
-                }),
-                "print" => return Ok(Expression {
-                    cmd: Command::Print,
-                }),
-                "write" => return Ok(Expression {
-                    cmd: Command::Write,
-                }),
+                "add" => return Ok(Expression { cmd: Command::Add }),
+                "delete_all" => {
+                    return Ok(Expression {
+                        cmd: Command::DeleteAll,
+                    })
+                }
+                "exit" => return Ok(Expression { cmd: Command::Exit }),
+                "print" => {
+                    return Ok(Expression {
+                        cmd: Command::Print,
+                    })
+                }
+                "write" => {
+                    return Ok(Expression {
+                        cmd: Command::Write,
+                    })
+                }
                 _ => unreachable!(),
             }
         }

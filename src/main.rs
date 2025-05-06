@@ -1,6 +1,6 @@
 use clap::Parser;
 use hrtor::cli::{CLIArgs, FileInfo};
-use hrtor::processor::constants::{CommandStatus, CommandResult};
+use hrtor::processor::constants::{CommandResult, CommandStatus};
 use hrtor::processor::{Hrtor, HrtorProcessor, Processor};
 use linefeed::Interface;
 use std::sync::{Arc, Mutex};

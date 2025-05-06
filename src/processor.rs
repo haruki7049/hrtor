@@ -34,8 +34,8 @@
 pub mod actions;
 pub mod constants;
 
-use constants::{CommandResult, CommandStatus};
 use crate::cli::FileInfo;
+use constants::{CommandResult, CommandStatus};
 use linefeed::{ReadResult, Signal};
 use std::sync::{Arc, Mutex};
 
@@ -112,9 +112,9 @@ impl Processor for HrtorProcessor {
 
 #[cfg(test)]
 mod test {
+    use crate::cli::FileInfo;
     use crate::processor::Hrtor;
     use crate::processor::HrtorProcessor;
-    use crate::cli::FileInfo;
     use std::sync::{Arc, Mutex};
 
     #[test]

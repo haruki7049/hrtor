@@ -16,5 +16,4 @@ categories = ["text-editors"]
 [dependencies]
 anyhow = { version = "1.0.98", features = ["backtrace"] }
 clap = { version = "4.4.7", features = ["derive"] }
-color-eyre = "0.6.4"
 linefeed = "0.6.0"

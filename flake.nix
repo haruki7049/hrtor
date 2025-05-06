@@ -55,24 +55,6 @@
           cargo-doc = craneLib.cargoDoc {
             inherit src cargoArtifacts;
           };
-          manual = pkgs.stdenv.mkDerivation {
-            pname = "hrtor-manual";
-            version = "dev";
-            src = lib.cleanSource ./manual;
-
-            nativeBuildInputs = [
-              pkgs.mdbook
-            ];
-
-            buildPhase = ''
-              mdbook build
-            '';
-
-            installPhase = ''
-              mkdir -p $out/share
-              cp -r book $out/share
-            '';
-          };
         in
         {
           _module.args.pkgs = import inputs.nixpkgs {
@@ -96,10 +78,7 @@
           };
 
           packages = {
-            inherit
-              hrtor
-              manual
-              ;
+            inherit hrtor;
             default = hrtor;
             doc = cargo-doc;
           };
@@ -109,7 +88,6 @@
               hrtor
               cargo-clippy
               cargo-doc
-              manual
               ;
           };
 
@@ -120,9 +98,6 @@
 
               # Nix
               pkgs.nil
-
-              # mdBook
-              pkgs.mdbook
             ];
 
             shellHook = ''

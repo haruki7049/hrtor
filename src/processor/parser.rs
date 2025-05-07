@@ -6,11 +6,12 @@ use pest_derive::Parser;
 #[grammar = "processor/expr.pest"]
 pub struct HrtorParser;
 
+#[derive(Debug)]
 pub struct Expression {
     pub cmd: Command,
 }
 
-#[derive(PartialEq)]
+#[derive(Debug, PartialEq)]
 pub enum Command {
     Add,
     DeleteAll,

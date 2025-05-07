@@ -62,7 +62,10 @@ pub trait Processor {
     /// Interpret CommandStatus without Input loop
     fn interpret_command_status(&self, status: CommandStatus);
 
-    fn handle_command(&self, command: ReadResult) -> CommandStatus;
+    fn handle_command(&self, command: ReadResult) -> anyhow::Result<CommandStatus>;
+
+    /// Evaluates the command
+    fn eval(&self, str: String) -> anyhow::Result<CommandStatus>;
 }
 
 pub struct Hrtor {
@@ -101,33 +104,29 @@ impl Processor for HrtorProcessor {
         }
     }
 
-    fn handle_command(&self, command: ReadResult) -> CommandStatus {
+    fn handle_command(&self, command: ReadResult) -> anyhow::Result<CommandStatus> {
         match command {
-            ReadResult::Input(str) => {
-                let expr: Expression = parser::parse(str.as_str()).unwrap();
-
-                if expr.cmd == Command::Exit {
-                    return self.exit();
-                }
-                if expr.cmd == Command::Write {
-                    return self.write();
-                }
-                if expr.cmd == Command::Add {
-                    return self.add();
-                }
-                if expr.cmd == Command::DeleteAll {
-                    return self.delete_all();
-                }
-                if expr.cmd == Command::Print {
-                    return self.print();
-                }
-                CommandStatus::Continue(CommandResult::NotFound(str))
-            }
+            ReadResult::Input(str) => self.eval(str),
             ReadResult::Eof
             | ReadResult::Signal(Signal::Interrupt)
-            | ReadResult::Signal(Signal::Quit) => CommandStatus::Quit,
-            _ => CommandStatus::Continue(CommandResult::NothingToDo),
+            | ReadResult::Signal(Signal::Quit) => Ok(CommandStatus::Quit),
+            _ => Ok(CommandStatus::Continue(CommandResult::NothingToDo)),
         }
+    }
+
+    fn eval(&self, str: String) -> anyhow::Result<CommandStatus> {
+        let expr: Expression = match parser::parse(str.as_str()) {
+            Ok(v) => v,
+            Err(e) => anyhow::bail!(e),
+        };
+
+        return match expr.cmd {
+            Command::Exit => Ok(self.exit()),
+            Command::Write => Ok(self.write()),
+            Command::Add => Ok(self.add()),
+            Command::DeleteAll => Ok(self.delete_all()),
+            Command::Print => Ok(self.print()),
+        };
     }
 }
 

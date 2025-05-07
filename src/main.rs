@@ -25,7 +25,13 @@ fn main() -> anyhow::Result<()> {
     // mainloop by linefeed
     while let CommandStatus::Continue(result) = {
         let read = reader.read_line()?;
-        instance.processor.handle_command(read)
+        match instance.processor.handle_command(read) {
+            Ok(v) => v,
+            Err(e) => {
+                eprintln!("{}", e);
+                CommandStatus::Continue(CommandResult::NothingToDo)
+            }
+        }
     } {
         match result {
             CommandResult::Ok => {}

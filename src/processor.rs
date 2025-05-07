@@ -136,13 +136,14 @@ mod test {
     use crate::cli::FileInfo;
     use crate::processor::Hrtor;
     use crate::processor::HrtorProcessor;
+    use std::path::PathBuf;
     use std::sync::{Arc, Mutex};
 
     #[test]
     fn test_handle_command() {
         let hrtor_processor: HrtorProcessor = HrtorProcessor {
             editing_file: Arc::new(Mutex::new(FileInfo {
-                path: "test".to_string(),
+                path: PathBuf::from("test"),
                 context: "test".to_string(),
             })),
         };

@@ -30,12 +30,13 @@ impl CLIArgs {
 mod tests {
     use super::CLIArgs;
     use super::FileInfo;
+    use std::path::PathBuf;
 
     #[test]
     /// How to read FileInfo from CLIArgs struct.
     fn how_to_read_fileinfo() -> anyhow::Result<()> {
         let args: CLIArgs = CLIArgs {
-            path: String::from("test.txt"),
+            path: PathBuf::from("test.txt"),
         };
 
         let fileinfo: FileInfo = args.read_fileinfo();

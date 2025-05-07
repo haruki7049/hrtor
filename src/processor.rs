@@ -93,9 +93,6 @@ impl Processor for HrtorProcessor {
         match status {
             CommandStatus::Continue(CommandResult::Ok) => (),
             CommandStatus::Continue(CommandResult::NothingToDo) => (),
-            CommandStatus::Continue(CommandResult::NotFound(name)) => {
-                panic!("unknown command: {:?}", name);
-            }
             CommandStatus::Quit => {
                 // Exit status zero
                 println!("Bye!!");

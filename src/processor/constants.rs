@@ -7,6 +7,5 @@ pub enum CommandStatus {
 #[derive(Debug)]
 pub enum CommandResult {
     Ok,
-    NotFound(String),
     NothingToDo,
 }

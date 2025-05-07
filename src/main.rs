@@ -36,9 +36,6 @@ fn main() -> anyhow::Result<()> {
         match result {
             CommandResult::Ok => {}
             CommandResult::NothingToDo => {}
-            CommandResult::NotFound(name) => {
-                eprintln!("unknown command: {:?}", name);
-            }
         }
     }
 

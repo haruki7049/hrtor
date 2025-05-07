@@ -1,6 +1,7 @@
 use super::constants::CommandStatus;
 use crate::processor::{HrtorProcessor, command_status_ok};
 use std::io::StdinLock;
+use std::path::PathBuf;
 
 impl HrtorProcessor {
     pub fn exit(&self) -> CommandStatus {
@@ -44,7 +45,7 @@ impl HrtorProcessor {
 }
 
 /// save file
-fn save_file(filepath: &String, file_context: &String) {
+fn save_file(filepath: &PathBuf, file_context: &String) {
     if let Err(err) = std::fs::write(filepath, file_context) {
         eprintln!("Error saving file: {}", err);
     } else {

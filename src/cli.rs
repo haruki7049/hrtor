@@ -1,8 +1,9 @@
 use clap::Parser;
+use std::path::PathBuf;
 
 #[derive(Debug, PartialEq, Eq)]
 pub struct FileInfo {
-    pub path: String,
+    pub path: PathBuf,
     pub context: String,
 }
 
@@ -10,7 +11,7 @@ pub struct FileInfo {
 pub struct CLIArgs {
     /// File's Path
     #[arg(help = "The file you want to edit")]
-    pub path: String,
+    pub path: PathBuf,
 }
 
 impl CLIArgs {

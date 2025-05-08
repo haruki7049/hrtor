@@ -9,6 +9,7 @@ pub struct HrtorParser;
 #[derive(Debug)]
 pub struct Expression {
     pub action: Action,
+    pub arguments: Vec<Action>,
 }
 
 #[derive(Debug, PartialEq)]
@@ -31,21 +32,34 @@ fn parse_pair(pair: Pair<Rule>) -> anyhow::Result<Expression> {
             // Now command has a str as "write"
 
             match command.as_span().as_str() {
-                "add" => return Ok(Expression { action: Action::Add }),
+                "add" => {
+                    return Ok(Expression {
+                        action: Action::Add,
+                        arguments: vec![],
+                    });
+                }
                 "delete_all" => {
                     return Ok(Expression {
                         action: Action::DeleteAll,
+                        arguments: vec![],
                     });
                 }
-                "exit" => return Ok(Expression { action: Action::Exit }),
+                "exit" => {
+                    return Ok(Expression {
+                        action: Action::Exit,
+                        arguments: vec![],
+                    });
+                }
                 "print" => {
                     return Ok(Expression {
                         action: Action::Print,
+                        arguments: vec![],
                     });
                 }
                 "write" => {
                     return Ok(Expression {
                         action: Action::Write,
+                        arguments: vec![],
                     });
                 }
                 _ => unreachable!(),

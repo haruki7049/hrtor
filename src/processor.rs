@@ -37,7 +37,7 @@ pub mod constants;
 pub mod parser;
 
 use crate::cli::FileInfo;
-use crate::processor::parser::{Command, Expression};
+use crate::processor::parser::{Action, Expression};
 use constants::{CommandResult, CommandStatus};
 use linefeed::{ReadResult, Signal};
 use std::sync::{Arc, Mutex};
@@ -117,12 +117,12 @@ impl Processor for HrtorProcessor {
             Err(e) => anyhow::bail!(e),
         };
 
-        return match expr.cmd {
-            Command::Exit => Ok(self.exit()),
-            Command::Write => Ok(self.write()),
-            Command::Add => Ok(self.add()),
-            Command::DeleteAll => Ok(self.delete_all()),
-            Command::Print => Ok(self.print()),
+        return match expr.action {
+            Action::Exit => Ok(self.exit()),
+            Action::Write => Ok(self.write()),
+            Action::Add => Ok(self.add()),
+            Action::DeleteAll => Ok(self.delete_all()),
+            Action::Print => Ok(self.print()),
         };
     }
 }

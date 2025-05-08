@@ -8,11 +8,11 @@ pub struct HrtorParser;
 
 #[derive(Debug)]
 pub struct Expression {
-    pub cmd: Command,
+    pub action: Action,
 }
 
 #[derive(Debug, PartialEq)]
-pub enum Command {
+pub enum Action {
     Add,
     DeleteAll,
     Exit,
@@ -31,21 +31,21 @@ fn parse_pair(pair: Pair<Rule>) -> anyhow::Result<Expression> {
             // Now command has a str as "write"
 
             match command.as_span().as_str() {
-                "add" => return Ok(Expression { cmd: Command::Add }),
+                "add" => return Ok(Expression { action: Action::Add }),
                 "delete_all" => {
                     return Ok(Expression {
-                        cmd: Command::DeleteAll,
+                        action: Action::DeleteAll,
                     });
                 }
-                "exit" => return Ok(Expression { cmd: Command::Exit }),
+                "exit" => return Ok(Expression { action: Action::Exit }),
                 "print" => {
                     return Ok(Expression {
-                        cmd: Command::Print,
+                        action: Action::Print,
                     });
                 }
                 "write" => {
                     return Ok(Expression {
-                        cmd: Command::Write,
+                        action: Action::Write,
                     });
                 }
                 _ => unreachable!(),

@@ -1,3 +1,28 @@
+//! # Hrtor actions
+//!
+//! 1. Write down your actions as HrtorProcessor's methods.
+//! 2. Then you can use the methods in eval method on HrtorProcessor, written on `src/processor.rs`
+//! ```rs
+//! impl Processor for HrtorProcessor {
+//!     // interpret_command_status & handle_command is needed by Processor trait
+//!
+//!     fn eval(&self, str: String) -> anyhow::Result<CommandStatus> {
+//!         let expr: Expression = match parser::parse(str.as_str()) {
+//!             Ok(v) => v,
+//!             Err(e) => anyhow::bail!(e),
+//!         };
+//!
+//!         return match expr.cmd {
+//!             Command::Exit => Ok(self.exit()),
+//!             Command::Write => Ok(self.write()),
+//!             Command::Add => Ok(self.add()),
+//!             Command::DeleteAll => Ok(self.delete_all()),
+//!             Command::Print => Ok(self.print()),
+//!         };
+//!     }
+//! }
+//! ```
+
 use super::constants::CommandStatus;
 use crate::processor::{HrtorProcessor, command_status_ok};
 use std::io::StdinLock;

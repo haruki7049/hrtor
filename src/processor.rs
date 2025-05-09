@@ -1,40 +1,8 @@
 //! # Hrtor processor module
-//!
-//! This crate has some structs
-//! - Hrtor
-//! - HrtorProcessor
-//!
-//! And some traits
-//! - Processor
-//!
-//! ## Structs
-//!
-//! ### Hrtor
-//! #### Variables
-//! - processor: `Arc<HrtorProcessor>`
-//!
-//! #### Interface
-//! - new: `Fn(processor: HrtorProcessor) -> Self`
-//! - from: `Fn(file: FileInfo) -> Self`
-//!
-//! ### HrtorProcessor
-//! #### variables
-//! - editing_file: `Arc<Mutex<FileInfo>>`
-//!
-//! #### Interface
-//! - handle_command: `Fn(&self, command: ReadResult) -> CommandStatus`
-//! - interpret_command_status: `Fn(&self, status: CommandStatus)`
-//! - from: `Fn(file: FileInfo) -> Self`
-//!
-//! ## Traits
-//!
-//! ### Processor
-//! - interpret_command_status: `Fn(&self, status: CommandStatus)`
-//! - handle_command: `Fn(&self, command: ReadResult) -> CommandStatus`
 
-pub mod actions;
+mod actions;
 pub mod constants;
-pub mod parser;
+mod parser;
 
 use crate::cli::FileInfo;
 use crate::processor::parser::{Action, Expression};
@@ -117,22 +85,6 @@ impl Processor for HrtorProcessor {
     /// 1. Receives a String
     /// 2. Converts it to a Expression
     /// 3. Forks process by the Expression, then returns CommandStatus
-    ///
-    /// ```rust
-    /// let expr: Expression = match parser::parse(str.as_str()) {
-    ///     Ok(v) => v,
-    ///     Err(e) => anyhow::bail!(e),
-    /// };
-    ///
-    /// # The methods return CommandStatus
-    /// return match expr.action {
-    ///     Action::Exit => Ok(self.exit()),
-    ///     Action::Write => Ok(self.write()),
-    ///     Action::Add => Ok(self.add()),
-    ///     Action::DeleteAll => Ok(self.delete_all()),
-    ///     Action::Print => Ok(self.print()),
-    /// };
-    /// ```
     fn eval(&self, str: String) -> anyhow::Result<CommandStatus> {
         let expr: Expression = match parser::parse(str.as_str()) {
             Ok(v) => v,

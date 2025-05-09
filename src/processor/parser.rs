@@ -33,34 +33,34 @@ fn parse_pair(pair: Pair<Rule>) -> anyhow::Result<Expression> {
 
             match command.as_span().as_str() {
                 "add" => {
-                    return Ok(Expression {
+                    Ok(Expression {
                         action: Action::Add,
                         arguments: vec![],
-                    });
+                    })
                 }
                 "delete_all" => {
-                    return Ok(Expression {
+                    Ok(Expression {
                         action: Action::DeleteAll,
                         arguments: vec![],
-                    });
+                    })
                 }
                 "exit" => {
-                    return Ok(Expression {
+                    Ok(Expression {
                         action: Action::Exit,
                         arguments: vec![],
-                    });
+                    })
                 }
                 "print" => {
-                    return Ok(Expression {
+                    Ok(Expression {
                         action: Action::Print,
                         arguments: vec![],
-                    });
+                    })
                 }
                 "write" => {
-                    return Ok(Expression {
+                    Ok(Expression {
                         action: Action::Write,
                         arguments: vec![],
-                    });
+                    })
                 }
                 _ => unreachable!(),
             }
@@ -71,5 +71,5 @@ fn parse_pair(pair: Pair<Rule>) -> anyhow::Result<Expression> {
 pub fn parse(s: &str) -> anyhow::Result<Expression> {
     let mut pairs = HrtorParser::parse(Rule::expr, s)?;
 
-    Ok(parse_pair(pairs.next().unwrap())?)
+    parse_pair(pairs.next().unwrap())
 }

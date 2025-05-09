@@ -91,13 +91,13 @@ impl Processor for HrtorProcessor {
             Err(e) => anyhow::bail!(e),
         };
 
-        return match expr.action {
+        match expr.action {
             Action::Exit => Ok(self.exit()),
             Action::Write => Ok(self.write()),
             Action::Add => Ok(self.add()),
             Action::DeleteAll => Ok(self.delete_all()),
             Action::Print => Ok(self.print()),
-        };
+        }
     }
 }
 

@@ -27,9 +27,6 @@ pub fn command_status_ok() -> CommandStatus {
 }
 
 pub trait Processor {
-    /// Interpret CommandStatus without Input loop
-    fn interpret_command_status(&self, status: CommandStatus);
-
     fn handle_command(&self, command: ReadResult) -> anyhow::Result<CommandStatus>;
 
     /// Evaluates the command
@@ -57,18 +54,6 @@ impl Hrtor {
 }
 
 impl Processor for HrtorProcessor {
-    fn interpret_command_status(&self, status: CommandStatus) {
-        match status {
-            CommandStatus::Continue(CommandResult::Ok) => (),
-            CommandStatus::Continue(CommandResult::NothingToDo) => (),
-            CommandStatus::Quit => {
-                // Exit status zero
-                println!("Bye!!");
-                std::process::exit(0);
-            }
-        }
-    }
-
     fn handle_command(&self, command: ReadResult) -> anyhow::Result<CommandStatus> {
         match command {
             ReadResult::Input(str) => self.eval(str),

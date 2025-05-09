@@ -2,7 +2,8 @@
 //!
 //! 1. Write down your actions as HrtorProcessor's methods.
 //! 2. Then you can use the methods in eval method on HrtorProcessor, written on `src/processor.rs`
-//! ```rs
+//!
+//! ```rust
 //! impl Processor for HrtorProcessor {
 //!     // interpret_command_status & handle_command is needed by Processor trait
 //!

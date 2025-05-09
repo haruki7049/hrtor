@@ -111,6 +111,28 @@ impl Processor for HrtorProcessor {
         }
     }
 
+    /// Eval function
+    /// This function receives a String, then the internal logic converts it to a Expression.
+    ///
+    /// 1. Receives a String
+    /// 2. Converts it to a Expression
+    /// 3. Forks process by the Expression, then returns CommandStatus
+    ///
+    /// ```rust
+    /// let expr: Expression = match parser::parse(str.as_str()) {
+    ///     Ok(v) => v,
+    ///     Err(e) => anyhow::bail!(e),
+    /// };
+    ///
+    /// # The methods return CommandStatus
+    /// return match expr.action {
+    ///     Action::Exit => Ok(self.exit()),
+    ///     Action::Write => Ok(self.write()),
+    ///     Action::Add => Ok(self.add()),
+    ///     Action::DeleteAll => Ok(self.delete_all()),
+    ///     Action::Print => Ok(self.print()),
+    /// };
+    /// ```
     fn eval(&self, str: String) -> anyhow::Result<CommandStatus> {
         let expr: Expression = match parser::parse(str.as_str()) {
             Ok(v) => v,

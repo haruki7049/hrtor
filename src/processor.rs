@@ -99,7 +99,7 @@ mod test {
         let hrtor_processor: HrtorProcessor = HrtorProcessor {
             editing_file: Arc::new(Mutex::new(FileInfo {
                 path: PathBuf::from("test"),
-                context: "test".to_string(),
+                context: String::from("test"),
             })),
         };
         let _hrtor = Hrtor::new(hrtor_processor);

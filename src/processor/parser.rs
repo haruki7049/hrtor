@@ -32,36 +32,26 @@ fn parse_pair(pair: Pair<Rule>) -> anyhow::Result<Expression> {
             // Now command has a str as "write"
 
             match command.as_span().as_str() {
-                "add" => {
-                    Ok(Expression {
-                        action: Action::Add,
-                        arguments: vec![],
-                    })
-                }
-                "delete_all" => {
-                    Ok(Expression {
-                        action: Action::DeleteAll,
-                        arguments: vec![],
-                    })
-                }
-                "exit" => {
-                    Ok(Expression {
-                        action: Action::Exit,
-                        arguments: vec![],
-                    })
-                }
-                "print" => {
-                    Ok(Expression {
-                        action: Action::Print,
-                        arguments: vec![],
-                    })
-                }
-                "write" => {
-                    Ok(Expression {
-                        action: Action::Write,
-                        arguments: vec![],
-                    })
-                }
+                "add" => Ok(Expression {
+                    action: Action::Add,
+                    arguments: vec![],
+                }),
+                "delete_all" => Ok(Expression {
+                    action: Action::DeleteAll,
+                    arguments: vec![],
+                }),
+                "exit" => Ok(Expression {
+                    action: Action::Exit,
+                    arguments: vec![],
+                }),
+                "print" => Ok(Expression {
+                    action: Action::Print,
+                    arguments: vec![],
+                }),
+                "write" => Ok(Expression {
+                    action: Action::Write,
+                    arguments: vec![],
+                }),
                 _ => unreachable!(),
             }
         }

@@ -15,7 +15,7 @@ categories = ["text-editors"]
 
 [dependencies]
 anyhow = { version = "1.0.98", features = ["backtrace"] }
-clap = { version = "4.4.7", features = ["derive"] }
+clap = { version = "4.5.37", features = ["derive"] }
 linefeed = "0.6.0"
 pest = "2.8.0"
 pest_derive = "2.8.0"

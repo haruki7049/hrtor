@@ -8,6 +8,7 @@ pub struct FileInfo {
 }
 
 #[derive(Parser)]
+#[command(version, about)]
 pub struct CLIArgs {
     /// File's Path
     #[arg(help = "The file you want to edit")]

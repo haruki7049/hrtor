@@ -81,7 +81,7 @@ impl Processor for HrtorProcessor {
             Action::Write => Ok(self.write(expr.arguments)),
             Action::Add => Ok(self.add(expr.arguments)),
             Action::DeleteAll => Ok(self.delete_all(expr.arguments)),
-            Action::Print => Ok(self.print()),
+            Action::Print => Ok(self.print(expr.arguments)),
         }
     }
 }

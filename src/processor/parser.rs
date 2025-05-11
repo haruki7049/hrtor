@@ -26,34 +26,32 @@ pub enum Action {
 
 fn parse_pair(pair: Pair<Rule>) -> anyhow::Result<Expression> {
     match pair.as_rule() {
-        Rule::EOI => panic!("EOI detected by parser"),
-        Rule::command => unreachable!(),
+        Rule::EOI | Rule::action | Rule::arguments | Rule::PUNCT_WORD => unreachable!(),
         Rule::expr => {
             let mut rule = pair.into_inner();
-            let command = rule.next().unwrap();
+            let action = rule.next().unwrap();
+            let arguments: String = rule.next().unwrap().as_span().as_str().to_string();
 
-            // Now command has a str as "write"
-
-            match command.as_span().as_str() {
+            match action.as_span().as_str() {
                 "add" => Ok(Expression {
                     action: Action::Add,
-                    arguments: String::new(),
+                    arguments,
                 }),
                 "delete_all" => Ok(Expression {
                     action: Action::DeleteAll,
-                    arguments: String::new(),
+                    arguments,
                 }),
                 "exit" => Ok(Expression {
                     action: Action::Exit,
-                    arguments: String::new(),
+                    arguments,
                 }),
                 "print" => Ok(Expression {
                     action: Action::Print,
-                    arguments: String::new(),
+                    arguments,
                 }),
                 "write" => Ok(Expression {
                     action: Action::Write,
-                    arguments: String::new(),
+                    arguments,
                 }),
                 _ => unreachable!(),
             }

@@ -1,6 +1,6 @@
-use std::path::PathBuf;
 use crate::processor::constants::CommandStatus;
 use crate::processor::{HrtorProcessor, command_status_ok};
+use std::path::PathBuf;
 
 impl HrtorProcessor {
     pub fn write(&self, _arguments: String) -> CommandStatus {

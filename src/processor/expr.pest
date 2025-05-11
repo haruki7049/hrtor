@@ -1,3 +1,5 @@
-expr = { SOI ~ command ~ EOI }
+expr = { SOI ~ PUNCT_WORD* ~ action ~ (PUNCT_WORD+ ~ arguments)? ~ EOI }
 
-command = { "add" | "delete_all" | "exit" | "print" | "write" }
+PUNCT_WORD = _{ " " | "\t" }
+action = @{ "add" | "delete_all" | "exit" | "print" | "write" }
+arguments = @{ ASCII* }

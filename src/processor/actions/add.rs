@@ -1,5 +1,5 @@
+use crate::processor::HrtorProcessor;
 use crate::processor::constants::CommandStatus;
-use crate::processor::{HrtorProcessor, command_status_ok};
 use std::io::StdinLock;
 
 impl HrtorProcessor {
@@ -11,7 +11,8 @@ impl HrtorProcessor {
         {
             self.editing_file.lock().unwrap().context = new_context;
         }
-        command_status_ok()
+
+        CommandStatus::Continue
     }
 }
 

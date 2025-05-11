@@ -1,11 +1,5 @@
 #[derive(Debug)]
 pub enum CommandStatus {
-    Continue(CommandResult),
+    Continue,
     Quit,
-}
-
-#[derive(Debug)]
-pub enum CommandResult {
-    Ok,
-    NothingToDo,
 }

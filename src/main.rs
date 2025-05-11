@@ -1,6 +1,6 @@
 use clap::Parser;
 use hrtor::cli::{CLIArgs, FileInfo};
-use hrtor::processor::constants::{CommandResult, CommandStatus};
+use hrtor::processor::constants::CommandStatus;
 use hrtor::processor::{Hrtor, Processor};
 use linefeed::Interface;
 
@@ -23,19 +23,17 @@ fn main() -> anyhow::Result<()> {
     let instance = Hrtor::from(file);
 
     // mainloop by linefeed
-    while let CommandStatus::Continue(result) = {
+    loop {
         let read = reader.read_line()?;
-        match instance.processor.handle_command(read) {
-            Ok(v) => v,
-            Err(e) => {
-                eprintln!("{}", e);
-                CommandStatus::Continue(CommandResult::NothingToDo)
-            }
-        }
-    } {
-        match result {
-            CommandResult::Ok => {}
-            CommandResult::NothingToDo => {}
+        let status: CommandStatus = instance.processor.handle_command(read).unwrap_or_else(|e| {
+            // Display the error if your command has an error, then continues hrtor.
+            eprintln!("{}", e);
+            CommandStatus::Continue
+        });
+
+        match status {
+            CommandStatus::Continue => continue,
+            CommandStatus::Quit => break,
         }
     }
 

@@ -6,7 +6,7 @@ mod parser;
 
 use crate::cli::FileInfo;
 use crate::processor::parser::{Action, Expression};
-use constants::{CommandResult, CommandStatus};
+use constants::CommandStatus;
 use linefeed::{ReadResult, Signal};
 use std::sync::{Arc, Mutex};
 
@@ -20,10 +20,6 @@ impl HrtorProcessor {
             editing_file: Arc::new(Mutex::new(file)),
         }
     }
-}
-
-pub fn command_status_ok() -> CommandStatus {
-    CommandStatus::Continue(CommandResult::Ok)
 }
 
 pub trait Processor {
@@ -60,7 +56,7 @@ impl Processor for HrtorProcessor {
             ReadResult::Eof
             | ReadResult::Signal(Signal::Interrupt)
             | ReadResult::Signal(Signal::Quit) => Ok(CommandStatus::Quit),
-            _ => Ok(CommandStatus::Continue(CommandResult::NothingToDo)),
+            _ => Ok(CommandStatus::Continue),
         }
     }
 
@@ -71,10 +67,7 @@ impl Processor for HrtorProcessor {
     /// 2. Converts it to a Expression
     /// 3. Forks process by the Expression, then returns CommandStatus
     fn eval(&self, str: String) -> anyhow::Result<CommandStatus> {
-        let expr: Expression = match parser::parse(str.as_str()) {
-            Ok(v) => v,
-            Err(e) => anyhow::bail!(e),
-        };
+        let expr: Expression = parser::parse(str.as_str())?;
 
         match expr.action {
             Action::Exit => Ok(self.exit(expr.arguments)),

@@ -1,5 +1,5 @@
+use crate::processor::HrtorProcessor;
 use crate::processor::constants::CommandStatus;
-use crate::processor::{HrtorProcessor, command_status_ok};
 use std::path::PathBuf;
 
 impl HrtorProcessor {
@@ -8,7 +8,8 @@ impl HrtorProcessor {
             let editing_file = self.editing_file.lock().unwrap();
             save_file(&editing_file.path, &editing_file.context);
         }
-        command_status_ok()
+
+        CommandStatus::Continue
     }
 }
 

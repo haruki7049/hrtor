@@ -3,6 +3,8 @@ use crate::processor::constants::CommandStatus;
 use std::io::StdinLock;
 
 impl HrtorProcessor {
+    /// # Add action
+    /// `Add action` adds some contents you entered to `editing_file`
     pub fn add(&self, _arguments: &str) -> CommandStatus {
         let reader: StdinLock = std::io::stdin().lock();
         let _writer: std::io::Stdout = std::io::stdout();

@@ -1,5 +1,5 @@
 expr = { SOI ~ PUNCT_WORD* ~ action ~ (PUNCT_WORD+ ~ arguments)? ~ EOI }
 
 PUNCT_WORD = _{ " " | "\t" }
-action = @{ "add" | "delete_all" | "exit" | "print" | "write" }
+action = @{ (ASCII_ALPHA | "_")+ }
 arguments = @{ ASCII* }

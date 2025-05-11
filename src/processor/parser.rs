@@ -22,6 +22,7 @@ pub enum Action {
     Exit,
     Print,
     Write,
+    Tutorial,
 }
 
 fn parse_pair(pair: Pair<Rule>) -> anyhow::Result<Expression> {
@@ -53,7 +54,11 @@ fn parse_pair(pair: Pair<Rule>) -> anyhow::Result<Expression> {
                     action: Action::Write,
                     arguments: arguments.as_span().as_str(),
                 }),
-                _ => unreachable!(),
+                "tutorial" => Ok(Expression {
+                    action: Action::Tutorial,
+                    arguments: arguments.as_span().as_str(),
+                }),
+                s => anyhow::bail!("ACTION_LOADING_ERROR: Unknown action's name, {}", s),
             }
         }
     }

@@ -77,7 +77,7 @@ impl Processor for HrtorProcessor {
         };
 
         match expr.action {
-            Action::Exit => Ok(self.exit()),
+            Action::Exit => Ok(self.exit(expr.arguments)),
             Action::Write => Ok(self.write()),
             Action::Add => Ok(self.add()),
             Action::DeleteAll => Ok(self.delete_all()),

@@ -1,12 +1,11 @@
+pub mod exit;
+
 use super::constants::CommandStatus;
 use crate::processor::{HrtorProcessor, command_status_ok};
 use std::io::StdinLock;
 use std::path::PathBuf;
 
 impl HrtorProcessor {
-    pub fn exit(&self) -> CommandStatus {
-        CommandStatus::Quit
-    }
     pub fn delete_all(&self) -> CommandStatus {
         {
             let mut editing_file = self.editing_file.lock().unwrap();

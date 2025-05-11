@@ -15,6 +15,7 @@ pub struct HrtorProcessor {
 }
 
 impl HrtorProcessor {
+    /// Creates Hrtorprocessor from a FileInfo which user want to edit
     fn from(file: FileInfo) -> Self {
         Self {
             editing_file: Arc::new(Mutex::new(file)),
@@ -23,6 +24,7 @@ impl HrtorProcessor {
 }
 
 pub trait Processor {
+    /// Handle the strings from linefeed's inputs
     fn handle_command(&self, command: ReadResult) -> anyhow::Result<CommandStatus>;
 
     /// Evaluates the command
@@ -50,6 +52,7 @@ impl Hrtor {
 }
 
 impl Processor for HrtorProcessor {
+    /// Handle the strings from linefeed's inputs
     fn handle_command(&self, command: ReadResult) -> anyhow::Result<CommandStatus> {
         match command {
             ReadResult::Input(str) => self.eval(str),

@@ -3,7 +3,7 @@ use crate::processor::{HrtorProcessor, command_status_ok};
 use std::io::StdinLock;
 
 impl HrtorProcessor {
-    pub fn add(&self, _arguments: String) -> CommandStatus {
+    pub fn add(&self, _arguments: &str) -> CommandStatus {
         let reader: StdinLock = std::io::stdin().lock();
         let _writer: std::io::Stdout = std::io::stdout();
 

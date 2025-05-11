@@ -3,7 +3,7 @@ use crate::processor::{HrtorProcessor, command_status_ok};
 use std::path::PathBuf;
 
 impl HrtorProcessor {
-    pub fn write(&self, _arguments: String) -> CommandStatus {
+    pub fn write(&self, _arguments: &str) -> CommandStatus {
         {
             let editing_file = self.editing_file.lock().unwrap();
             save_file(&editing_file.path, &editing_file.context);

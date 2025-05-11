@@ -7,12 +7,12 @@ use pest_derive::Parser;
 pub struct HrtorParser;
 
 #[derive(Debug)]
-pub struct Expression {
+pub struct Expression<'i> {
     pub action: Action,
 
-    /// # Arguments: String
+    /// # Arguments: &'static str
     /// This value is parsed by each actions
-    pub arguments: String,
+    pub arguments: &'i str,
 }
 
 #[derive(Debug, PartialEq)]
@@ -30,28 +30,28 @@ fn parse_pair(pair: Pair<Rule>) -> anyhow::Result<Expression> {
         Rule::expr => {
             let mut rule = pair.into_inner();
             let action = rule.next().unwrap();
-            let arguments: String = rule.next().unwrap().as_span().as_str().to_string();
+            let arguments = rule.next().unwrap();
 
             match action.as_span().as_str() {
                 "add" => Ok(Expression {
                     action: Action::Add,
-                    arguments,
+                    arguments: arguments.as_span().as_str(),
                 }),
                 "delete_all" => Ok(Expression {
                     action: Action::DeleteAll,
-                    arguments,
+                    arguments: arguments.as_span().as_str(),
                 }),
                 "exit" => Ok(Expression {
                     action: Action::Exit,
-                    arguments,
+                    arguments: arguments.as_span().as_str(),
                 }),
                 "print" => Ok(Expression {
                     action: Action::Print,
-                    arguments,
+                    arguments: arguments.as_span().as_str(),
                 }),
                 "write" => Ok(Expression {
                     action: Action::Write,
-                    arguments,
+                    arguments: arguments.as_span().as_str(),
                 }),
                 _ => unreachable!(),
             }

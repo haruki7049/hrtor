@@ -1,4 +1,5 @@
 pub mod exit;
+pub mod delete_all;
 
 use super::constants::CommandStatus;
 use crate::processor::{HrtorProcessor, command_status_ok};
@@ -6,13 +7,6 @@ use std::io::StdinLock;
 use std::path::PathBuf;
 
 impl HrtorProcessor {
-    pub fn delete_all(&self) -> CommandStatus {
-        {
-            let mut editing_file = self.editing_file.lock().unwrap();
-            editing_file.context.clear();
-        }
-        command_status_ok()
-    }
     pub fn print(&self) -> CommandStatus {
         let context = { &self.editing_file.lock().unwrap().context };
         println!("{}", context);

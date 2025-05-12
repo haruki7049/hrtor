@@ -1,4 +1,6 @@
-use clap::Parser;
+use anyhow::Context as _;
+use clap::{CommandFactory, Parser, Subcommand};
+use clap_complete::{Generator, Shell, generate};
 use hrtor::processor::constants::CommandStatus;
 use hrtor::processor::{FileInfo, Hrtor, Processor};
 use linefeed::Interface;
@@ -12,8 +14,15 @@ fn main() -> anyhow::Result<()> {
     // Gets CLIArgs by Hrtor's Command-Line Interface
     let args: CLIArgs = CLIArgs::parse();
 
+    if let Some(Action::Completion { shell: generator }) = args.action {
+        display_shellcompletion(generator);
+
+        // Early return
+        return Ok(());
+    }
+
     // Gets FileInfo from CLIArgs
-    let file: FileInfo = args.read_fileinfo();
+    let file: FileInfo = args.read_fileinfo()?;
 
     // create interpreter by linefeed
     let reader = Interface::new(PROMPT)?;
@@ -47,20 +56,42 @@ fn main() -> anyhow::Result<()> {
 pub struct CLIArgs {
     /// File's Path
     #[arg(help = "The file you want to edit")]
-    pub path: PathBuf,
+    pub path: Option<PathBuf>,
+
+    #[clap(subcommand)]
+    action: Option<Action>,
+}
+
+#[derive(Debug, Subcommand)]
+enum Action {
+    Completion { shell: Shell },
 }
 
 impl CLIArgs {
     /// Creates file data typed FileInfo, from CLIArgs
-    pub fn read_fileinfo(&self) -> FileInfo {
-        FileInfo {
-            path: self.path.clone(),
-            context: std::fs::read_to_string(self.path.clone()).unwrap_or_else(|_| {
+    pub fn read_fileinfo(&self) -> anyhow::Result<FileInfo> {
+        let path: PathBuf = self
+            .path
+            .clone()
+            .context("No file found at the path you entered")?;
+
+        Ok(FileInfo {
+            path: path.clone(),
+            context: std::fs::read_to_string(path.clone()).unwrap_or_else(|_| {
                 eprintln!("your file cannot find. create a new buffer to continue this process.");
                 String::new()
             }),
-        }
+        })
     }
+}
+
+fn display_shellcompletion<G: Generator>(generator: G) {
+    generate(
+        generator,
+        &mut CLIArgs::command(),
+        env!("CARGO_PKG_NAME"),
+        &mut std::io::stdout(),
+    );
 }
 
 #[cfg(test)]
@@ -73,10 +104,11 @@ mod tests {
     /// How to read FileInfo from CLIArgs struct.
     fn how_to_read_fileinfo() -> anyhow::Result<()> {
         let args: CLIArgs = CLIArgs {
-            path: PathBuf::from("test.txt"),
+            path: Some(PathBuf::from("test.txt")),
+            action: None,
         };
 
-        let fileinfo: FileInfo = args.read_fileinfo();
+        let fileinfo: FileInfo = args.read_fileinfo()?;
 
         assert_eq!(String::new(), fileinfo.context);
 

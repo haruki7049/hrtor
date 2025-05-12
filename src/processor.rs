@@ -91,9 +91,7 @@ impl Processor for HrtorProcessor {
 
 #[cfg(test)]
 mod test {
-    use crate::cli::FileInfo;
-    use crate::processor::Hrtor;
-    use crate::processor::HrtorProcessor;
+    use crate::processor::{FileInfo, Hrtor, HrtorProcessor};
     use std::path::PathBuf;
     use std::sync::{Arc, Mutex};
 

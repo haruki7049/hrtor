@@ -4,11 +4,17 @@ mod actions;
 pub mod constants;
 mod parser;
 
-use crate::cli::FileInfo;
 use crate::processor::parser::{Action, Expression};
 use constants::CommandStatus;
 use linefeed::{ReadResult, Signal};
 use std::sync::{Arc, Mutex};
+use std::path::PathBuf;
+
+#[derive(Debug, PartialEq, Eq)]
+pub struct FileInfo {
+    pub path: PathBuf,
+    pub context: String,
+}
 
 pub struct HrtorProcessor {
     pub editing_file: Arc<Mutex<FileInfo>>,

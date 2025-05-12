@@ -7,8 +7,8 @@ mod parser;
 use crate::processor::parser::{Action, Expression};
 use constants::CommandStatus;
 use linefeed::{ReadResult, Signal};
-use std::sync::{Arc, Mutex};
 use std::path::PathBuf;
+use std::sync::{Arc, Mutex};
 
 #[derive(Debug, PartialEq, Eq)]
 pub struct FileInfo {

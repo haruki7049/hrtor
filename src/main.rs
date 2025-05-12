@@ -1,6 +1,6 @@
 use clap::Parser;
 use hrtor::processor::constants::CommandStatus;
-use hrtor::processor::{Hrtor, Processor, FileInfo};
+use hrtor::processor::{FileInfo, Hrtor, Processor};
 use linefeed::Interface;
 use std::path::PathBuf;
 

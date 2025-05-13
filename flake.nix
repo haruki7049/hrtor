@@ -53,11 +53,19 @@
           cargoArtifacts = craneLib.buildDepsOnly {
             inherit src;
           };
+          cargo-build-targets = {
+            x86_64-linux.CARGO_BUILD_TARGET = "x86_64-unknown-linux-musl";
+            aarch64-linux.CARGO_BUILD_TARGET = "aarch64-unknown-linux-musl";
+            x86_64-darwin.CARGO_BUILD_TARGET = "x86_64-apple-darwin";
+            aarch64-darwin.CARGO_BUILD_TARGET = "aarch64-apple-darwin";
+          };
           hrtor = craneLib.buildPackage {
             inherit src cargoArtifacts;
             strictDeps = true;
-
             doCheck = true;
+
+            inherit (cargo-build-targets."${system}") CARGO_BUILD_TARGET;
+            CARGO_BUILD_RUSTFLAGS = "-C target-feature=+crt-static";
           };
           cargo-clippy = craneLib.cargoClippy {
             inherit src cargoArtifacts;

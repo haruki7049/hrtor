@@ -331,9 +331,18 @@ dependencies = [
  "anyhow",
  "clap",
  "clap_complete",
+ "hrtor_grep",
  "linefeed",
  "pest",
  "pest_derive",
+]
+
+[[package]]
+name = "hrtor_grep"
+version = "0.1.0"
+source = "git+https://github.com/haruki7049/hrtor_grep.git#fc51e14d245f6fa32b0de7060a8f7f5e2831b0b3"
+dependencies = [
+ "anyhow",
 ]
 
 [[package]]

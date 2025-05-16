@@ -17,7 +17,6 @@ categories = ["text-editors"]
 anyhow = { version = "1.0.98", features = ["backtrace"] }
 clap = { version = "4.5.37", features = ["derive"] }
 clap_complete = "4.5.50"
-hrtor_grep = { git = "https://github.com/haruki7049/hrtor_grep.git", version = "0.1.0" }
 linefeed = "0.6.0"
 pest = "2.8.0"
 pest_derive = "2.8.0"

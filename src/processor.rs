@@ -43,7 +43,7 @@ impl Hrtor {
     /// Creates Hrtor instance by HrtorProcessor
     pub fn new(processor: HrtorProcessor) -> Self {
         Self {
-            processor: processor.into(),
+            processor,
         }
     }
 

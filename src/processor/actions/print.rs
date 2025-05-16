@@ -3,8 +3,7 @@ use crate::processor::constants::CommandStatus;
 
 impl HrtorProcessor {
     pub fn print(&self, _arguments: &str) -> CommandStatus {
-        let context = { &self.editing_file.lock().unwrap().context };
-        println!("{}", context);
+        println!("{}", &self.editing_file.context);
 
         CommandStatus::Continue
     }

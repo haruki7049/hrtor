@@ -3,7 +3,6 @@ use hrtor::cli::{CLIArgs, display_shellcompletion};
 use hrtor::processor::constants::CommandStatus;
 use hrtor::processor::{FileInfo, Hrtor, Processor};
 use linefeed::Interface;
-use std::sync::Arc;
 
 /// PROMPT message in interpreter
 pub const PROMPT: &str = "hrtor:> ";
@@ -32,13 +31,11 @@ fn main() -> anyhow::Result<()> {
     // mainloop by linefeed
     loop {
         let read = reader.read_line()?;
-        let status: CommandStatus = Arc::make_mut(&mut instance.processor)
-            .handle_command(read)
-            .unwrap_or_else(|e| {
-                // Display the error if your command has an error, then continues hrtor.
-                eprintln!("{}", e);
-                CommandStatus::Continue
-            });
+        let status: CommandStatus = instance.processor.handle_command(read).unwrap_or_else(|e| {
+            // Display the error if your command has an error, then continues hrtor.
+            eprintln!("{}", e);
+            CommandStatus::Continue
+        });
 
         match status {
             CommandStatus::Continue => continue,

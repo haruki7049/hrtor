@@ -8,9 +8,8 @@ use crate::processor::parser::{Action, Expression};
 use constants::CommandStatus;
 use linefeed::{ReadResult, Signal};
 use std::path::PathBuf;
-use std::sync::{Arc, Mutex};
 
-#[derive(Debug, PartialEq, Eq)]
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub struct FileInfo {
     pub path: Option<PathBuf>,
     pub context: String,
@@ -18,15 +17,13 @@ pub struct FileInfo {
 
 #[derive(Clone)]
 pub struct HrtorProcessor {
-    pub editing_file: Arc<Mutex<FileInfo>>,
+    pub editing_file: FileInfo,
 }
 
 impl HrtorProcessor {
     /// Creates Hrtorprocessor from a FileInfo which user want to edit
     fn from(file: FileInfo) -> Self {
-        Self {
-            editing_file: Arc::new(Mutex::new(file)),
-        }
+        Self { editing_file: file }
     }
 }
 
@@ -39,7 +36,7 @@ pub trait Processor {
 }
 
 pub struct Hrtor {
-    pub processor: Arc<HrtorProcessor>,
+    pub processor: HrtorProcessor,
 }
 
 impl Hrtor {
@@ -53,7 +50,7 @@ impl Hrtor {
     /// Creates Hrtor instance from the file user want to edit
     pub fn from(file: FileInfo) -> Self {
         Self {
-            processor: Arc::new(HrtorProcessor::from(file)),
+            processor: HrtorProcessor::from(file),
         }
     }
 }
@@ -94,15 +91,14 @@ impl Processor for HrtorProcessor {
 #[cfg(test)]
 mod test {
     use crate::processor::{FileInfo, Hrtor, HrtorProcessor};
-    use std::sync::{Arc, Mutex};
 
     #[test]
     fn test_handle_command() {
         let hrtor_processor: HrtorProcessor = HrtorProcessor {
-            editing_file: Arc::new(Mutex::new(FileInfo {
+            editing_file: FileInfo {
                 path: None,
                 context: String::from("test"),
-            })),
+            },
         };
         let _hrtor = Hrtor::new(hrtor_processor);
     }

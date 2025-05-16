@@ -1,7 +1,7 @@
-use crate::processor::{HrtorProcessor, FileInfo};
 use crate::processor::constants::CommandStatus;
-use std::path::PathBuf;
+use crate::processor::{FileInfo, HrtorProcessor};
 use std::fs::read_to_string;
+use std::path::PathBuf;
 
 impl HrtorProcessor {
     pub fn open(&mut self, arguments: &str) -> anyhow::Result<CommandStatus> {

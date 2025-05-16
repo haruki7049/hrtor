@@ -42,9 +42,7 @@ pub struct Hrtor {
 impl Hrtor {
     /// Creates Hrtor instance by HrtorProcessor
     pub fn new(processor: HrtorProcessor) -> Self {
-        Self {
-            processor,
-        }
+        Self { processor }
     }
 
     /// Creates Hrtor instance from the file user want to edit

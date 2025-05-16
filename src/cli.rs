@@ -1,37 +1,28 @@
 use crate::processor::FileInfo;
-use anyhow::Context as _;
-use clap::{CommandFactory, Parser, Subcommand};
+use clap::{CommandFactory, Parser};
 use clap_complete::{Generator, Shell, generate};
 use std::path::PathBuf;
 
-#[derive(Parser)]
-#[command(version, about)]
+#[derive(Debug, Parser)]
+#[clap(version, about)]
 /// CLI Arguments, parsed by clap crate.
 pub struct CLIArgs {
-    /// File's Path
-    #[arg(help = "The file you want to edit")]
+    /// The file you want to edit
+    #[clap(conflicts_with = "completion")]
     pub path: Option<PathBuf>,
 
-    #[clap(subcommand)]
-    action: Option<Action>,
-}
-
-#[derive(Debug, Subcommand)]
-enum Action {
-    Completion { shell: Shell },
+    #[clap(long, group = "action", exclusive = true)]
+    pub completion: Option<Shell>,
 }
 
 impl CLIArgs {
     /// Creates file data typed FileInfo, from CLIArgs
     pub fn read_fileinfo(&self) -> anyhow::Result<FileInfo> {
-        let path: PathBuf = self
-            .path
-            .clone()
-            .context("No file found at the path you entered")?;
+        let path: PathBuf = self.path.clone().unwrap_or_default();
 
         Ok(FileInfo {
-            path: path.clone(),
-            context: std::fs::read_to_string(path.clone()).unwrap_or_else(|_| {
+            path: Some(path.clone()),
+            context: std::fs::read_to_string(path).unwrap_or_else(|_| {
                 eprintln!("your file cannot find. create a new buffer to continue this process.");
                 String::new()
             }),
@@ -39,7 +30,8 @@ impl CLIArgs {
     }
 }
 
-fn display_shellcompletion<G: Generator>(generator: G) {
+/// Print out the shell script for Hrtor completion
+pub fn display_shellcompletion<G: Generator>(generator: G) {
     generate(
         generator,
         &mut CLIArgs::command(),
@@ -59,7 +51,7 @@ mod tests {
     fn how_to_read_fileinfo() -> anyhow::Result<()> {
         let args: CLIArgs = CLIArgs {
             path: Some(PathBuf::from("test.txt")),
-            action: None,
+            completion: None,
         };
 
         let fileinfo: FileInfo = args.read_fileinfo()?;

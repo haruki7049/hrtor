@@ -12,10 +12,11 @@ use std::sync::{Arc, Mutex};
 
 #[derive(Debug, PartialEq, Eq)]
 pub struct FileInfo {
-    pub path: PathBuf,
+    pub path: Option<PathBuf>,
     pub context: String,
 }
 
+#[derive(Clone)]
 pub struct HrtorProcessor {
     pub editing_file: Arc<Mutex<FileInfo>>,
 }
@@ -31,10 +32,10 @@ impl HrtorProcessor {
 
 pub trait Processor {
     /// Handle the strings from linefeed's inputs
-    fn handle_command(&self, command: ReadResult) -> anyhow::Result<CommandStatus>;
+    fn handle_command(&mut self, command: ReadResult) -> anyhow::Result<CommandStatus>;
 
     /// Evaluates the command
-    fn eval(&self, str: String) -> anyhow::Result<CommandStatus>;
+    fn eval(&mut self, str: String) -> anyhow::Result<CommandStatus>;
 }
 
 pub struct Hrtor {
@@ -59,7 +60,7 @@ impl Hrtor {
 
 impl Processor for HrtorProcessor {
     /// Handle the strings from linefeed's inputs
-    fn handle_command(&self, command: ReadResult) -> anyhow::Result<CommandStatus> {
+    fn handle_command(&mut self, command: ReadResult) -> anyhow::Result<CommandStatus> {
         match command {
             ReadResult::Input(str) => self.eval(str),
             ReadResult::Eof
@@ -75,12 +76,12 @@ impl Processor for HrtorProcessor {
     /// 1. Receives a String
     /// 2. Converts it to a Expression
     /// 3. Forks process by the Expression, then returns CommandStatus
-    fn eval(&self, str: String) -> anyhow::Result<CommandStatus> {
+    fn eval(&mut self, str: String) -> anyhow::Result<CommandStatus> {
         let expr: Expression = parser::parse(str.as_str())?;
 
         match expr.action {
             Action::Exit => Ok(self.exit(expr.arguments)),
-            Action::Write => Ok(self.write(expr.arguments)),
+            Action::Write => Ok(self.write(expr.arguments)?),
             Action::Add => Ok(self.add(expr.arguments)),
             Action::DeleteAll => Ok(self.delete_all(expr.arguments)),
             Action::Print => Ok(self.print(expr.arguments)),
@@ -93,14 +94,13 @@ impl Processor for HrtorProcessor {
 #[cfg(test)]
 mod test {
     use crate::processor::{FileInfo, Hrtor, HrtorProcessor};
-    use std::path::PathBuf;
     use std::sync::{Arc, Mutex};
 
     #[test]
     fn test_handle_command() {
         let hrtor_processor: HrtorProcessor = HrtorProcessor {
             editing_file: Arc::new(Mutex::new(FileInfo {
-                path: PathBuf::from("test"),
+                path: None,
                 context: String::from("test"),
             })),
         };

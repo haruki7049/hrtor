@@ -1,15 +1,22 @@
 use crate::processor::HrtorProcessor;
 use crate::processor::constants::CommandStatus;
+use anyhow::Context as _;
 use std::path::PathBuf;
 
 impl HrtorProcessor {
-    pub fn write(&self, _arguments: &str) -> CommandStatus {
+    pub fn write(&self, _arguments: &str) -> anyhow::Result<CommandStatus> {
         {
             let editing_file = self.editing_file.lock().unwrap();
-            save_file(&editing_file.path, &editing_file.context);
+            save_file(
+                &editing_file
+                    .path
+                    .clone()
+                    .context("OPEN ERROR: Cannot open the file because it is None")?,
+                &editing_file.context,
+            );
         }
 
-        CommandStatus::Continue
+        Ok(CommandStatus::Continue)
     }
 }
 

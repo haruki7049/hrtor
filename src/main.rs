@@ -1,8 +1,9 @@
 use clap::Parser;
-use hrtor::cli::CLIArgs;
+use hrtor::cli::{CLIArgs, display_shellcompletion};
 use hrtor::processor::constants::CommandStatus;
 use hrtor::processor::{FileInfo, Hrtor, Processor};
 use linefeed::Interface;
+use std::sync::Arc;
 
 /// PROMPT message in interpreter
 pub const PROMPT: &str = "hrtor:> ";
@@ -12,6 +13,12 @@ fn main() -> anyhow::Result<()> {
     // Gets CLIArgs by Hrtor's Command-Line Interface
     let args: CLIArgs = CLIArgs::parse();
 
+    // Generates shell completion if the completion option is selected by Hrtor CLI interface
+    if args.completion.is_some() {
+        display_shellcompletion(args.completion.unwrap());
+        return Ok(());
+    }
+
     // Gets FileInfo from CLIArgs
     let file: FileInfo = args.read_fileinfo()?;
 
@@ -20,16 +27,18 @@ fn main() -> anyhow::Result<()> {
     reader.set_prompt(PROMPT.to_string().as_ref())?;
 
     // Create Hrtor instance
-    let instance = Hrtor::from(file);
+    let mut instance = Hrtor::from(file);
 
     // mainloop by linefeed
     loop {
         let read = reader.read_line()?;
-        let status: CommandStatus = instance.processor.handle_command(read).unwrap_or_else(|e| {
-            // Display the error if your command has an error, then continues hrtor.
-            eprintln!("{}", e);
-            CommandStatus::Continue
-        });
+        let status: CommandStatus = Arc::make_mut(&mut instance.processor)
+            .handle_command(read)
+            .unwrap_or_else(|e| {
+                // Display the error if your command has an error, then continues hrtor.
+                eprintln!("{}", e);
+                CommandStatus::Continue
+            });
 
         match status {
             CommandStatus::Continue => continue,

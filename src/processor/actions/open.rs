@@ -1,6 +1,5 @@
 use crate::processor::{HrtorProcessor, FileInfo};
 use crate::processor::constants::CommandStatus;
-use anyhow::Context as _;
 use std::path::PathBuf;
 use std::fs::read_to_string;
 

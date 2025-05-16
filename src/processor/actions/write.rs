@@ -5,16 +5,14 @@ use std::path::PathBuf;
 
 impl HrtorProcessor {
     pub fn write(&self, _arguments: &str) -> anyhow::Result<CommandStatus> {
-        {
-            save_file(
-                &self
-                    .editing_file
-                    .path
-                    .clone()
-                    .context("OPEN ERROR: Cannot open the file because it is None")?,
-                &self.editing_file.context,
-            );
-        }
+        save_file(
+            &self
+                .editing_file
+                .path
+                .clone()
+                .context("OPEN ERROR: Cannot open the file because it is None")?,
+            &self.editing_file.context,
+        );
 
         Ok(CommandStatus::Continue)
     }

@@ -7,12 +7,10 @@ impl HrtorProcessor {
     /// `Add action` adds some contents you entered to `editing_file`
     pub fn add(&mut self, _arguments: &str) -> CommandStatus {
         let reader: StdinLock = std::io::stdin().lock();
-        let _writer: std::io::Stdout = std::io::stdout();
+        let writer: std::io::Stdout = std::io::stdout();
 
-        let new_context = push_context(reader, _writer);
-        {
-            self.editing_file.context = new_context;
-        }
+        let new_context = push_context(reader, writer);
+        self.editing_file.context = new_context;
 
         CommandStatus::Continue
     }

@@ -84,6 +84,7 @@ impl Processor for HrtorProcessor {
             Action::Print => Ok(self.print(expr.arguments)),
             Action::Tutorial => Ok(self.tutorial(expr.arguments)),
             Action::Grep => Ok(self.grep(expr.arguments)?),
+            Action::Open => Ok(self.open(expr.arguments)?),
         }
     }
 }

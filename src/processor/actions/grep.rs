@@ -6,10 +6,13 @@ impl HrtorProcessor {
         let mut result: String = String::new();
         let setp_str: Vec<&str> = self.editing_file.context.split('\n').collect(); // Separated String at '\n'
 
-        for s in setp_str {
-            if s.contains(arguments) {
-                result.push_str(s);
-                result.push('\n');
+        // Line Counter
+        let mut counter: usize = 0;
+        for string in setp_str {
+            counter += 1;
+            let s: String = format!("{}: {}\n", counter, string);
+            if string.contains(arguments) {
+                result.push_str(&s);
             }
         }
 

@@ -47,7 +47,9 @@ fn main() -> anyhow::Result<()> {
     Ok(())
 }
 
-fn convert_linefeed<Term: linefeed::Terminal>(interface: &Interface<Term>) -> anyhow::Result<ReadResult> {
+fn convert_linefeed<Term: linefeed::Terminal>(
+    interface: &Interface<Term>,
+) -> anyhow::Result<ReadResult> {
     return match interface.read_line()? {
         linefeed::ReadResult::Eof => Ok(ReadResult::Eof),
         linefeed::ReadResult::Input(string) => Ok(ReadResult::Input(string)),

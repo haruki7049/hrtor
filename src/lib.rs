@@ -1,7 +1,16 @@
 pub mod actions;
 pub mod cli;
 
-use crate::actions::add::HrtorAdd;
+use crate::actions::{
+    add::HrtorAdd,
+    delete_all::HrtorDeleteAll,
+    exit::HrtorExit,
+    git::HrtorGit,
+    grep::HrtorGrep,
+    open::HrtorOpen,
+    print::HrtorPrint,
+    write::HrtorWrite,
+};
 use hrtor_core::constants::CommandStatus;
 use hrtor_core::parser::{self, Expression};
 use hrtor_core::{FileInfo, Processor, ReadResult, Signal};
@@ -33,6 +42,13 @@ impl Processor for ProcessorImplementation {
 
         match expr.action {
             "add" => Ok(self.add(expr.arguments)),
+            "delete_all" => Ok(self.delete_all(expr.arguments)),
+            "exit" => Ok(self.exit(expr.arguments)),
+            "git" => Ok(self.git(expr.arguments)?),
+            "grep" => Ok(self.grep(expr.arguments)?),
+            "open" => Ok(self.open(expr.arguments)?),
+            "print" => Ok(self.print(expr.arguments)),
+            "write" => Ok(self.write(expr.arguments)?),
             s => anyhow::bail!("ACTION_LOADING_ERROR: Unknown action's name, {}", s),
         }
     }

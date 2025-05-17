@@ -1,10 +1,14 @@
-use crate::processor::HrtorProcessor;
-use crate::processor::constants::CommandStatus;
+use crate::ProcessorImplementation;
+use hrtor_core::constants::CommandStatus;
 use anyhow::Context as _;
 use std::path::PathBuf;
 
-impl HrtorProcessor {
-    pub fn write(&self, _arguments: &str) -> anyhow::Result<CommandStatus> {
+pub trait HrtorWrite {
+    fn write(&self, _arguments: &str) -> anyhow::Result<CommandStatus>;
+}
+
+impl HrtorWrite for ProcessorImplementation {
+    fn write(&self, _arguments: &str) -> anyhow::Result<CommandStatus> {
         save_file(
             &self
                 .editing_file

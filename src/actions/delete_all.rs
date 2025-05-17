@@ -1,8 +1,12 @@
-use crate::processor::HrtorProcessor;
-use crate::processor::constants::CommandStatus;
+use hrtor_core::constants::CommandStatus;
+use crate::ProcessorImplementation;
 
-impl HrtorProcessor {
-    pub fn delete_all(&mut self, _arguments: &str) -> CommandStatus {
+pub trait HrtorDeleteAll {
+    fn delete_all(&mut self, _arguments: &str) -> CommandStatus;
+}
+
+impl HrtorDeleteAll for ProcessorImplementation {
+    fn delete_all(&mut self, _arguments: &str) -> CommandStatus {
         self.editing_file.context.clear();
 
         CommandStatus::Continue

@@ -1,10 +1,15 @@
-use crate::processor::constants::CommandStatus;
-use crate::processor::{FileInfo, HrtorProcessor};
+use crate::ProcessorImplementation;
+use hrtor_core::FileInfo;
+use hrtor_core::constants::CommandStatus;
 use std::fs::read_to_string;
 use std::path::PathBuf;
 
-impl HrtorProcessor {
-    pub fn open(&mut self, arguments: &str) -> anyhow::Result<CommandStatus> {
+pub trait HrtorOpen {
+    fn open(&mut self, arguments: &str) -> anyhow::Result<CommandStatus>;
+}
+
+impl HrtorOpen for ProcessorImplementation {
+    fn open(&mut self, arguments: &str) -> anyhow::Result<CommandStatus> {
         let path: PathBuf = PathBuf::from(arguments);
         self.editing_file = read_fileinfo(path)?;
 

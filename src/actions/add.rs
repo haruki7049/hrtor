@@ -1,11 +1,15 @@
-use crate::processor::HrtorProcessor;
-use crate::processor::constants::CommandStatus;
+use crate::ProcessorImplementation;
+use hrtor_core::constants::CommandStatus;
 use std::io::StdinLock;
 
-impl HrtorProcessor {
+pub trait HrtorAdd {
+    fn add(&mut self, _arguments: &str) -> CommandStatus;
+}
+
+impl HrtorAdd for ProcessorImplementation {
     /// # Add action
     /// `Add action` adds some contents you entered to `editing_file`
-    pub fn add(&mut self, _arguments: &str) -> CommandStatus {
+    fn add(&mut self, _arguments: &str) -> CommandStatus {
         let reader: StdinLock = std::io::stdin().lock();
         let writer: std::io::Stdout = std::io::stdout();
 

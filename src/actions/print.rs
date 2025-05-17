@@ -1,8 +1,12 @@
-use crate::processor::HrtorProcessor;
-use crate::processor::constants::CommandStatus;
+use crate::ProcessorImplementation;
+use hrtor_core::constants::CommandStatus;
 
-impl HrtorProcessor {
-    pub fn print(&self, _arguments: &str) -> CommandStatus {
+pub trait HrtorPrint {
+    fn print(&mut self, arguments: &str) -> CommandStatus;
+}
+
+impl HrtorPrint for ProcessorImplementation {
+    fn print(&mut self, _arguments: &str) -> CommandStatus {
         let mut result: String = String::new();
         let setp_str: Vec<&str> = self.editing_file.context.split('\n').collect(); // Separated String at '\n'
 

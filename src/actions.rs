@@ -5,5 +5,4 @@ pub mod git;
 pub mod grep;
 pub mod open;
 pub mod print;
-pub mod tutorial;
 pub mod write;

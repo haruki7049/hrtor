@@ -97,6 +97,7 @@ impl Processor for HrtorProcessor {
             Action::Tutorial => Ok(self.tutorial(expr.arguments)),
             Action::Grep => Ok(self.grep(expr.arguments)?),
             Action::Open => Ok(self.open(expr.arguments)?),
+            Action::Git => Ok(self.git(expr.arguments)?),
         }
     }
 }

@@ -20,6 +20,7 @@ pub enum Action {
     Add,
     DeleteAll,
     Exit,
+    Git,
     Grep,
     Open,
     Print,
@@ -46,6 +47,10 @@ fn parse_pair(pair: Pair<Rule>) -> anyhow::Result<Expression> {
                 }),
                 "exit" => Ok(Expression {
                     action: Action::Exit,
+                    arguments: arguments.as_span().as_str(),
+                }),
+                "git" => Ok(Expression {
+                    action: Action::Git,
                     arguments: arguments.as_span().as_str(),
                 }),
                 "grep" => Ok(Expression {

@@ -1,6 +1,6 @@
 use crate::ProcessorImplementation;
-use hrtor_core::constants::CommandStatus;
 use hrtor_core::FileInfo;
+use hrtor_core::constants::CommandStatus;
 use std::fs::read_to_string;
 use std::path::PathBuf;
 

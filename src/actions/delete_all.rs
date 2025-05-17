@@ -1,5 +1,5 @@
-use hrtor_core::constants::CommandStatus;
 use crate::ProcessorImplementation;
+use hrtor_core::constants::CommandStatus;
 
 pub trait HrtorDeleteAll {
     fn delete_all(&mut self, _arguments: &str) -> CommandStatus;

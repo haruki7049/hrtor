@@ -1,6 +1,6 @@
 use crate::ProcessorImplementation;
-use hrtor_core::constants::CommandStatus;
 use anyhow::Context as _;
+use hrtor_core::constants::CommandStatus;
 use std::path::PathBuf;
 
 pub trait HrtorWrite {

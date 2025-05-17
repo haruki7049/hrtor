@@ -2,14 +2,8 @@ pub mod actions;
 pub mod cli;
 
 use crate::actions::{
-    add::HrtorAdd,
-    delete_all::HrtorDeleteAll,
-    exit::HrtorExit,
-    git::HrtorGit,
-    grep::HrtorGrep,
-    open::HrtorOpen,
-    print::HrtorPrint,
-    write::HrtorWrite,
+    add::HrtorAdd, delete_all::HrtorDeleteAll, exit::HrtorExit, git::HrtorGit, grep::HrtorGrep,
+    open::HrtorOpen, print::HrtorPrint, write::HrtorWrite,
 };
 use hrtor_core::constants::CommandStatus;
 use hrtor_core::parser::{self, Expression};

@@ -1,7 +1,7 @@
 use clap::Parser;
 use hrtor::cli::{CLIArgs, display_shellcompletion};
 use hrtor::processor::constants::CommandStatus;
-use hrtor::processor::{FileInfo, Hrtor, Processor};
+use hrtor::processor::{FileInfo, Hrtor, Processor, ReadResult, Signal};
 use linefeed::Interface;
 
 /// PROMPT message in interpreter
@@ -30,7 +30,7 @@ fn main() -> anyhow::Result<()> {
 
     // mainloop by linefeed
     loop {
-        let read = reader.read_line()?;
+        let read: ReadResult = convert_linefeed(&reader)?;
         let status: CommandStatus = instance.processor.handle_command(read).unwrap_or_else(|e| {
             // Display the error if your command has an error, then continues hrtor.
             eprintln!("{}", e);
@@ -45,4 +45,19 @@ fn main() -> anyhow::Result<()> {
 
     println!("Bye!!");
     Ok(())
+}
+
+fn convert_linefeed<Term: linefeed::Terminal>(interface: &Interface<Term>) -> anyhow::Result<ReadResult> {
+    return match interface.read_line()? {
+        linefeed::ReadResult::Eof => Ok(ReadResult::Eof),
+        linefeed::ReadResult::Input(string) => Ok(ReadResult::Input(string)),
+        linefeed::ReadResult::Signal(signal) => match signal {
+            linefeed::Signal::Break => Ok(ReadResult::Signal(Signal::Break)),
+            linefeed::Signal::Continue => Ok(ReadResult::Signal(Signal::Continue)),
+            linefeed::Signal::Interrupt => Ok(ReadResult::Signal(Signal::Interrupt)),
+            linefeed::Signal::Resize => Ok(ReadResult::Signal(Signal::Resize)),
+            linefeed::Signal::Suspend => Ok(ReadResult::Signal(Signal::Suspend)),
+            linefeed::Signal::Quit => Ok(ReadResult::Signal(Signal::Quit)),
+        },
+    };
 }

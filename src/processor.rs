@@ -6,7 +6,6 @@ mod parser;
 
 use crate::processor::parser::{Action, Expression};
 use constants::CommandStatus;
-use linefeed::{ReadResult, Signal};
 use std::path::PathBuf;
 
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -20,6 +19,21 @@ pub struct HrtorProcessor {
     pub editing_file: FileInfo,
 }
 
+pub enum ReadResult {
+    Input(String),
+    Signal(Signal),
+    Eof,
+}
+
+pub enum Signal {
+    Break,
+    Continue,
+    Interrupt,
+    Resize,
+    Suspend,
+    Quit,
+}
+
 impl HrtorProcessor {
     /// Creates Hrtorprocessor from a FileInfo which user want to edit
     fn from(file: FileInfo) -> Self {
@@ -28,7 +42,7 @@ impl HrtorProcessor {
 }
 
 pub trait Processor {
-    /// Handle the strings from linefeed's inputs
+    /// Handle the strings from inputs by main.rs on Hrtor implementation
     fn handle_command(&mut self, command: ReadResult) -> anyhow::Result<CommandStatus>;
 
     /// Evaluates the command
@@ -54,7 +68,7 @@ impl Hrtor {
 }
 
 impl Processor for HrtorProcessor {
-    /// Handle the strings from linefeed's inputs
+    /// Handle the strings from inputs by main.rs on Hrtor implementation
     fn handle_command(&mut self, command: ReadResult) -> anyhow::Result<CommandStatus> {
         match command {
             ReadResult::Input(str) => self.eval(str),

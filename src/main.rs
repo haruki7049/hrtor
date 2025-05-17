@@ -1,7 +1,8 @@
 use clap::Parser;
+use hrtor::ProcessorImplementation;
 use hrtor::cli::{CLIArgs, display_shellcompletion};
-use hrtor::processor::constants::CommandStatus;
-use hrtor::processor::{FileInfo, Hrtor, Processor, ReadResult, Signal};
+use hrtor_core::constants::CommandStatus;
+use hrtor_core::{FileInfo, Processor, ReadResult, Signal};
 use linefeed::Interface;
 
 /// PROMPT message in interpreter
@@ -25,13 +26,13 @@ fn main() -> anyhow::Result<()> {
     let reader = Interface::new(PROMPT)?;
     reader.set_prompt(PROMPT.to_string().as_ref())?;
 
-    // Create Hrtor instance
-    let mut instance = Hrtor::from(file);
+    // Create Hrtor processor
+    let processor: &mut dyn Processor = &mut ProcessorImplementation { editing_file: file };
 
     // mainloop by linefeed
     loop {
         let read: ReadResult = convert_linefeed(&reader)?;
-        let status: CommandStatus = instance.processor.handle_command(read).unwrap_or_else(|e| {
+        let status: CommandStatus = processor.handle_command(read).unwrap_or_else(|e| {
             // Display the error if your command has an error, then continues hrtor.
             eprintln!("{}", e);
             CommandStatus::Continue

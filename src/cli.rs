@@ -1,6 +1,6 @@
-use crate::processor::FileInfo;
 use clap::{CommandFactory, Parser};
 use clap_complete::{Generator, Shell, generate};
+use hrtor_core::FileInfo;
 use std::path::PathBuf;
 
 #[derive(Debug, Parser)]

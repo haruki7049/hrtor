@@ -2,7 +2,7 @@ pub mod actions;
 pub mod cli;
 
 use crate::actions::{
-    add::HrtorAdd, delete_all::HrtorDeleteAll, exit::HrtorExit, git::HrtorGit, grep::HrtorGrep,
+    add::HrtorAdd, del::HrtorDel, exit::HrtorExit, git::HrtorGit, grep::HrtorGrep,
     open::HrtorOpen, print::HrtorPrint, write::HrtorWrite,
 };
 use hrtor_core::constants::CommandStatus;
@@ -36,7 +36,7 @@ impl Processor for ProcessorImplementation {
 
         match expr.action {
             "add" => Ok(self.add(expr.arguments)),
-            "delete_all" => Ok(self.delete_all(expr.arguments)),
+            "del" => Ok(self.del(expr.arguments)?),
             "exit" => Ok(self.exit(expr.arguments)),
             "git" => Ok(self.git(expr.arguments)?),
             "grep" => Ok(self.grep(expr.arguments)?),

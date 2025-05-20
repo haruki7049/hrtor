@@ -1,0 +1,5 @@
+ARGUMENTS = { SOI ~ PUNCT_WORD* ~ first_line ~ "," ~ last_line ~ PUNCT_WORD* ~ EOI }
+PUNCT_WORD = { " " | "\t" }
+
+first_line = { ASCII_DIGIT* }
+last_line = { ASCII_DIGIT* }

@@ -1,5 +1,5 @@
 pub mod add;
-pub mod delete_all;
+pub mod del;
 pub mod exit;
 pub mod git;
 pub mod grep;

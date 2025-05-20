@@ -2,7 +2,7 @@ use clap::Parser;
 use hrtor::ProcessorImplementation;
 use hrtor::cli::{CLIArgs, display_shellcompletion};
 use hrtor_core::constants::CommandStatus;
-use hrtor_core::{FileInfo, Processor, ReadResult, Signal, Loader};
+use hrtor_core::{FileInfo, Loader, Processor, ReadResult, Signal};
 use linefeed::Interface;
 
 /// PROMPT message in interpreter
@@ -27,7 +27,7 @@ fn main() -> anyhow::Result<()> {
     reader.set_prompt(PROMPT.to_string().as_ref())?;
 
     // Create Hrtor processor
-    let processor: &mut dyn Processor = &mut ProcessorImplementation { buffer, };
+    let processor: &mut dyn Processor = &mut ProcessorImplementation { buffer };
 
     // mainloop by linefeed
     loop {

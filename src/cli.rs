@@ -15,18 +15,17 @@ pub struct CLIArgs {
     pub completion: Option<Shell>,
 }
 
-impl CLIArgs {
-    /// Creates file data typed FileInfo, from CLIArgs
-    pub fn read_fileinfo(&self) -> anyhow::Result<FileInfo> {
+impl hrtor_core::Loader for CLIArgs {
+    fn buffer(&self) -> FileInfo {
         let path: PathBuf = self.path.clone().unwrap_or_default();
 
-        Ok(FileInfo {
+        FileInfo {
             path: Some(path.clone()),
             context: std::fs::read_to_string(path).unwrap_or_else(|_| {
                 eprintln!("your file cannot find. create a new buffer to continue this process.");
                 String::new()
             }),
-        })
+        }
     }
 }
 

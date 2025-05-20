@@ -340,10 +340,9 @@ dependencies = [
 [[package]]
 name = "hrtor_core"
 version = "0.1.0"
-source = "git+https://github.com/haruki7049/hrtor_core#06f38a132c4473d90e955cac1f2d28f07876e4a7"
+source = "git+https://github.com/haruki7049/hrtor_core?branch=main#4263a9b570c4a967486c25eac9eb4f1fffbfd6de"
 dependencies = [
  "anyhow",
- "linefeed",
  "pest",
  "pest_derive",
 ]

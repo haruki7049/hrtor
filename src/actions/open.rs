@@ -11,7 +11,7 @@ pub trait HrtorOpen {
 impl HrtorOpen for ProcessorImplementation {
     fn open(&mut self, arguments: &str) -> anyhow::Result<CommandStatus> {
         let path: PathBuf = PathBuf::from(arguments);
-        self.editing_file = read_fileinfo(path)?;
+        self.buffer = read_fileinfo(path)?;
 
         Ok(CommandStatus::Continue)
     }

@@ -11,11 +11,11 @@ impl HrtorWrite for ProcessorImplementation {
     fn write(&self, _arguments: &str) -> anyhow::Result<CommandStatus> {
         save_file(
             &self
-                .editing_file
+                .buffer
                 .path
                 .clone()
                 .context("OPEN ERROR: Cannot open the file because it is None")?,
-            &self.editing_file.context,
+            &self.buffer.context,
         );
 
         Ok(CommandStatus::Continue)

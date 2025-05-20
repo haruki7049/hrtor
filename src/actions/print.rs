@@ -8,7 +8,7 @@ pub trait HrtorPrint {
 impl HrtorPrint for ProcessorImplementation {
     fn print(&mut self, _arguments: &str) -> CommandStatus {
         let mut result: String = String::new();
-        let setp_str: Vec<&str> = self.editing_file.context.split('\n').collect(); // Separated String at '\n'
+        let setp_str: Vec<&str> = self.buffer.context.split('\n').collect(); // Separated String at '\n'
 
         // Line Counter
         let mut counter: usize = 0;

@@ -8,13 +8,13 @@ pub trait HrtorAdd {
 
 impl HrtorAdd for ProcessorImplementation {
     /// # Add action
-    /// `Add action` adds some contents you entered to `editing_file`
+    /// `Add action` adds some contents you entered to `buffer`
     fn add(&mut self, _arguments: &str) -> CommandStatus {
         let reader: StdinLock = std::io::stdin().lock();
         let writer: std::io::Stdout = std::io::stdout();
 
         let new_context = push_context(reader, writer);
-        self.editing_file.context = new_context;
+        self.buffer.context = new_context;
 
         CommandStatus::Continue
     }

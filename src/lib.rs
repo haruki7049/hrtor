@@ -10,7 +10,7 @@ use hrtor_core::parser::{self, Expression};
 use hrtor_core::{FileInfo, Processor, ReadResult, Signal};
 
 pub struct ProcessorImplementation {
-    pub editing_file: FileInfo,
+    pub buffer: FileInfo,
 }
 
 impl Processor for ProcessorImplementation {

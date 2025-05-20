@@ -27,7 +27,7 @@ fn main() -> anyhow::Result<()> {
     reader.set_prompt(PROMPT.to_string().as_ref())?;
 
     // Create Hrtor processor
-    let processor: &mut dyn Processor = &mut ProcessorImplementation { editing_file: buffer };
+    let processor: &mut dyn Processor = &mut ProcessorImplementation { buffer, };
 
     // mainloop by linefeed
     loop {

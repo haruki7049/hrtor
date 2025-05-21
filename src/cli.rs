@@ -41,19 +41,19 @@ pub fn display_shellcompletion<G: Generator>(generator: G) {
 
 #[cfg(test)]
 mod tests {
-    use super::CLIArgs;
-    use super::FileInfo;
+    use super::{CLIArgs, FileInfo};
+    use hrtor_core::Loader;
     use std::path::PathBuf;
 
     #[test]
     /// How to read FileInfo from CLIArgs struct.
-    fn how_to_read_fileinfo() -> anyhow::Result<()> {
+    fn how_to_read_buffer() -> anyhow::Result<()> {
         let args: CLIArgs = CLIArgs {
             path: Some(PathBuf::from("test.txt")),
             completion: None,
         };
 
-        let fileinfo: FileInfo = args.read_fileinfo()?;
+        let fileinfo: FileInfo = args.buffer();
 
         assert_eq!(String::new(), fileinfo.context);
 

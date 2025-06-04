@@ -53,7 +53,7 @@ mod tests {
             completion: None,
         };
 
-        let fileinfo: FileInfo = args.buffer();
+        let fileinfo: FileInfo = args.buffer()?;
 
         assert_eq!(String::new(), fileinfo.context);
 

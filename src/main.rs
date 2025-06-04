@@ -20,7 +20,7 @@ fn main() -> anyhow::Result<()> {
     }
 
     // Gets FileInfo from CLIArgs
-    let buffer: FileInfo = args.buffer();
+    let buffer: FileInfo = args.buffer()?;
 
     // create interpreter by linefeed
     let reader = Interface::new(PROMPT)?;

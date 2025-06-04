@@ -1,6 +1,6 @@
 use clap::{CommandFactory, Parser};
 use clap_complete::{Generator, Shell, generate};
-use hrtor_core::FileInfo;
+use hrtor_core::{FileInfo, LoadError};
 use std::path::PathBuf;
 
 #[derive(Debug, Parser)]
@@ -16,16 +16,16 @@ pub struct CLIArgs {
 }
 
 impl hrtor_core::Loader for CLIArgs {
-    fn buffer(&self) -> FileInfo {
+    fn buffer(&self) -> Result<FileInfo, LoadError> {
         let path: PathBuf = self.path.clone().unwrap_or_default();
 
-        FileInfo {
+        Ok(FileInfo {
             path: Some(path.clone()),
             context: std::fs::read_to_string(path).unwrap_or_else(|_| {
                 eprintln!("your file cannot find. create a new buffer to continue this process.");
                 String::new()
             }),
-        }
+        })
     }
 }
 

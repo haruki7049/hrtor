@@ -1,7 +1,6 @@
+use crossterm::event::{Event, KeyCode, KeyEvent, KeyModifiers, read};
+use crossterm::terminal::{enable_raw_mode, disable_raw_mode};
 use std::io::{Write, stdin, stdout};
-use termion::event::{Event, Key};
-use termion::input::TermRead;
-use termion::raw::IntoRawMode;
 
 #[derive(Default)]
 pub struct Interpreter {
@@ -10,16 +9,16 @@ pub struct Interpreter {
 
 pub struct Config {
     prompt: &'static str,
-    interrupt: Key,
-    eof: Key,
+    interrupt: KeyEvent,
+    eof: KeyEvent,
 }
 
 impl std::default::Default for Config {
     fn default() -> Self {
         Self {
             prompt: "hrtor:> ",
-            interrupt: Key::Ctrl('c'),
-            eof: Key::Ctrl('d'),
+            interrupt: KeyEvent::new(KeyCode::Char('c'), KeyModifiers::CONTROL),
+            eof: KeyEvent::new(KeyCode::Char('d'), KeyModifiers::CONTROL),
         }
     }
 }
@@ -41,24 +40,29 @@ impl std::fmt::Display for InterpreterError {
 
 impl ReadLine for Interpreter {
     fn run(&mut self) -> Result<(), Box<dyn std::error::Error>> {
-        let stdin = stdin();
-        let mut stdout = stdout().into_raw_mode()?;
+        let mut stdout = std::io::stdout();
+        let stdin = std::io::stdin();
+        enable_raw_mode()?;
 
         stdout.write_all(self.config.prompt.as_bytes())?;
         stdout.flush()?;
 
-        for evt in stdin.events() {
-            match evt? {
-                Event::Key(key) => match key {
+        loop {
+            match read()? {
+                Event::Key(key_event) => match key_event {
                     // Interrupt
                     val if val == self.config.interrupt => {
+                        disable_raw_mode()?;
                         return Err(Box::new(InterpreterError::KeyboardInterrupt));
                     }
 
                     // EOF
-                    val if val == self.config.eof => return Ok(()),
+                    val if val == self.config.eof => {
+                        disable_raw_mode()?;
+                        return Ok(());
+                    }
 
-                    Key::Char('\n') => {
+                    KeyEvent { code: KeyCode::Enter, .. } => {
                         stdout.write_all(b"\n")?;
                         stdout.flush()?;
 
@@ -70,8 +74,6 @@ impl ReadLine for Interpreter {
                 _ => {}
             }
         }
-
-        Ok(())
     }
 }
 

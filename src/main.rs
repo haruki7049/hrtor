@@ -51,7 +51,7 @@ fn main() -> anyhow::Result<()> {
 fn convert_linefeed<Term: linefeed::Terminal>(
     interface: &Interface<Term>,
 ) -> anyhow::Result<ReadResult> {
-    return match interface.read_line()? {
+    match interface.read_line()? {
         linefeed::ReadResult::Eof => Ok(ReadResult::Eof),
         linefeed::ReadResult::Input(string) => Ok(ReadResult::Input(string)),
         linefeed::ReadResult::Signal(signal) => match signal {
@@ -62,5 +62,5 @@ fn convert_linefeed<Term: linefeed::Terminal>(
             linefeed::Signal::Suspend => Ok(ReadResult::Signal(Signal::Suspend)),
             linefeed::Signal::Quit => Ok(ReadResult::Signal(Signal::Quit)),
         },
-    };
+    }
 }

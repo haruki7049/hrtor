@@ -44,7 +44,7 @@ impl ReadLine for Interpreter {
         let stdin = stdin();
         let mut stdout = stdout().into_raw_mode()?;
 
-        stdout.write_all(&self.config.prompt.as_bytes())?;
+        stdout.write_all(self.config.prompt.as_bytes())?;
         stdout.flush()?;
 
         for evt in stdin.events() {

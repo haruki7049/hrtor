@@ -44,7 +44,7 @@ impl ReadLine for Interpreter {
         let stdin = stdin();
         let mut stdout = stdout().into_raw_mode()?;
 
-        stdout.write(&self.config.prompt.as_bytes())?;
+        stdout.write_all(&self.config.prompt.as_bytes())?;
         stdout.flush()?;
 
         for evt in stdin.events() {
@@ -59,7 +59,7 @@ impl ReadLine for Interpreter {
                     val if val == self.config.eof => return Ok(()),
 
                     Key::Char('\n') => {
-                        stdout.write(b"\n")?;
+                        stdout.write_all(b"\n")?;
                         stdout.flush()?;
 
                         continue;

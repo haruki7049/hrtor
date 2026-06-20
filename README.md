@@ -6,8 +6,6 @@ Haruki's scalable line editor
 
 ```bash
 nix build
-```
-
-```bash
+nix-build
 cargo build
 ```

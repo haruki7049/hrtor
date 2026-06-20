@@ -1,27 +1,13 @@
 # hrtor
 
-hrtor("hərtər", "ハルター", "ハーター", "ヘルター", "ヘルトル") is HaRuki's scalable line ediTOR.
+Haruki's scalable line editor
 
-## Usage
-
-- with Nix package manager
+## Build
 
 ```bash
-nix run github:haruki7049/hrtor#hrtor
-# OR
-nix run github:haruki7049/hrtor#hrtor -- your_file.txt
+nix build
 ```
-
-- with Rust-lang's Cargo
 
 ```bash
-# Install hrtor with:
-cargo install --git https://github.com/haruki7049/hrtor
+cargo build
 ```
-
-## How to add Actions
-
-1. Write down a function by Rust, on any file in `src/processor/actions/` directory, Such as `src/processor/actions/foobar.rs`.
-1. For Hrtor internal communications, Add a element to `crate::processor::parser::Action` in `src/processor/parser.rs` file.
-1. Edit eval method for HrtorProcessor, written on `src/processor.rs`
-1. Then, you can run Hrtor with your action!!
